@@ -37,7 +37,7 @@
   </div>
 </template>
 
-<script setup lang="ts" name="LAuth">
+<script setup lang="ts" name="VLogin">
 const router = useRouter();
 const route = useRoute();
 
