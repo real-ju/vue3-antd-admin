@@ -3,7 +3,7 @@ import type { Router, RouteLocationNormalized } from 'vue-router';
 import { useUserStore } from '/@/store/modules/user';
 import { usePermissionStoreWithOut } from '/@/store/modules/permission';
 import { BasicPageEnum, ExceptionPageEnum } from '/@/enums/pageEnum';
-import { getUserInfo } from '/@/api/auth';
+import { getPermissionData } from '/@/api/auth';
 import { getMenuFirstLeafNode } from '/@/logics/helper/layout';
 import { useLayoutStore } from '/@/store/modules/layout';
 
@@ -19,8 +19,6 @@ const routeWhiteList: (ExceptionPageEnum | string)[] = [
 ];
 
 export function createSafetyPermissionGuard(router: Router) {
-  let isFetchUserInfo = false;
-
   router.beforeEach((to, from, next) => {
     const isMatched = to.matched.length !== 0;
     if (!isMatched) {
@@ -36,11 +34,11 @@ export function createSafetyPermissionGuard(router: Router) {
     const userStore = useUserStore();
     const isLogin = userStore.isLogin;
     if (isLogin) {
-      if (!isFetchUserInfo) {
-        getUserInfo()
+      if (!userStore.hasFetchedPermissionData) {
+        getPermissionData()
           .then((res) => {
             permissionStore.routePermissions = ['xxx'];
-            isFetchUserInfo = true;
+            userStore.hasFetchedPermissionData = true;
 
             next(to);
           })

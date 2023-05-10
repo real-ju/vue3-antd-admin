@@ -11,6 +11,8 @@ export interface UserState {
 
 /* permission module */
 export interface PermissionState {
+  // 是否已从后端获取了权限数据
+  hasFetchedPermissionData: boolean;
   routePermissions: string[];
   actionPermissions: string[];
 }

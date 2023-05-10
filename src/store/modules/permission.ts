@@ -6,12 +6,18 @@ import type { PermissionState } from '/#/store';
 export const usePermissionStore = defineStore({
   id: 'permission',
   state: (): PermissionState => ({
+    hasFetchedPermissionData: false,
     routePermissions: [],
     actionPermissions: []
   }),
   getters: {},
   actions: {
     // generatePermissions() {}
+    clearPermissions() {
+      this.routePermissions = [];
+      this.actionPermissions = [];
+      this.hasFetchedPermissionData = false;
+    },
   }
 });
 
