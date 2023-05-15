@@ -37,9 +37,8 @@ export class Requester {
     const code = +response.data.code;
     if (code === 10001) {
       const userStore = useUserStore();
-      userStore.logout().then(() => {
-        router.push(BasicPageEnum.LOGIN);
-      });
+      userStore.logout();
+      router.push(BasicPageEnum.LOGIN);
     }
 
     const requestOptions: Required<RequestOptions> = response.config.requestOptions;
@@ -62,7 +61,6 @@ export class Requester {
 
         // handle token
         const userStore = useUserStore();
-        // config.headers['Authorization'] = 'Bearer 50d3324a-66e3-425c-bf2c-2492ca5ecea9';
         const customToken = requestOptions.customToken;
         if (requestOptions.auth && (userStore.isLogin || customToken)) {
           config.headers[requestOptions.authHeader] = customToken
