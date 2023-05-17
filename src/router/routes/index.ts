@@ -26,7 +26,7 @@ const refreshRoute: RouteRecordRaw = {
   name: 'refresh',
   meta: {
     title: 'Refresh',
-    public: false
+    public: true
   },
   component: {}
 };
