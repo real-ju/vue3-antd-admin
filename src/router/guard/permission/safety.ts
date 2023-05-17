@@ -13,9 +13,10 @@ function checkRoutePermission(to: RouteLocationNormalized) {
   return permissionStore.routePermissions.indexOf(String(to.name)) !== -1;
 }
 
-const routeWhiteList: (ExceptionPageEnum | string)[] = [
+const routeWhiteList: string[] = [
   ExceptionPageEnum.EXCEPTION_403,
-  ExceptionPageEnum.EXCEPTION_404
+  ExceptionPageEnum.EXCEPTION_404,
+  BasicPageEnum.REFRESH
 ];
 
 export function createSafetyPermissionGuard(router: Router) {
@@ -34,11 +35,11 @@ export function createSafetyPermissionGuard(router: Router) {
     const userStore = useUserStore();
     const isLogin = userStore.isLogin;
     if (isLogin) {
-      if (!userStore.hasFetchedPermissionData) {
+      if (!permissionStore.hasFetchedPermissionData) {
         getPermissionData()
           .then((res) => {
             permissionStore.routePermissions = ['xxx'];
-            userStore.hasFetchedPermissionData = true;
+            permissionStore.hasFetchedPermissionData = true;
 
             next(to);
           })
