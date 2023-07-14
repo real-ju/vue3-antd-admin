@@ -29,7 +29,6 @@
     "types/**/*.ts",
     "build/**/*.ts",
     "build/**/*.d.ts",
-    "vite.config.ts",
-    "src/store/index.ts.1"
+    "vite.config.ts"
   ]
 }
