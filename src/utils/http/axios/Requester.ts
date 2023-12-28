@@ -204,12 +204,13 @@ export class Requester {
   }
 
   request(requestParams: RequestParams, options?: RequestOptions) {
-    const { url, method, data } = requestParams;
+    const { url, method, data, ...restParams } = requestParams;
 
     return new Promise<any>((resolve, reject) => {
       const config: ExpandRequestConfig = {
         url,
         method,
+        ...restParams,
         requestOptions: options // axios auto deep marge
       };
 

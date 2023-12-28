@@ -28,11 +28,11 @@ export type FullExpandRequestConfig = Omit<ExpandRequestConfig, 'requestOptions'
   requestOptions: Required<RequestOptions>;
 };
 
-export interface RequestParams {
+export type RequestParams = AxiosRequestConfig & {
   url: string;
   method: RequestMethodEnum;
   data?: any;
-}
+};
 
 export interface UploadFileParams {
   url: string;
