@@ -1,6 +1,5 @@
 import type { Router } from 'vue-router';
 
-import { setPageTitle } from '/@/router/helper/routeHelper';
 import { useUserStore } from '/@/store/modules/user';
 import { BasicPageEnum, ExceptionPageEnum } from '/@/enums/pageEnum';
 
@@ -20,7 +19,6 @@ export function createLocalPermissionGuard(router: Router) {
       if (requireAuth) {
         // 检测是否登录
         if (isLogin) {
-          setPageTitle(to.meta.title, to.meta.hideTitleSuffix);
           next();
         } else {
           next({
@@ -35,7 +33,6 @@ export function createLocalPermissionGuard(router: Router) {
         if (to.path === BasicPageEnum.LOGIN && isLogin) {
           next('/');
         } else {
-          setPageTitle(to.meta.title, to.meta.hideTitleSuffix);
           next();
         }
       }

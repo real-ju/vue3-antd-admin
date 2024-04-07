@@ -14,7 +14,7 @@ export function createLayoutGuard(router: Router) {
     }
 
     // 设置页面标题
-    setPageTitle(to.meta.title);
+    setPageTitle(to.meta.title, to.meta.hideTitleSuffix);
 
     const layoutStore = useLayoutStore();
     // 更新菜单选中
