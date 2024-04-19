@@ -1,6 +1,6 @@
 # vue3-antd-admin
 
-vite + vue3 + ts + Antd 项目模板
+vite + vue3 + ts + antd 项目模板
 
 注意：下载模板后请先自行在 router/guard/permission/safety.ts 中配置路由鉴权和菜单逻辑，否则会一直 403
 
