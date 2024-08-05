@@ -8,4 +8,4 @@
 import zhCN from 'ant-design-vue/es/locale/zh_CN';
 </script>
 
-<style lang="scss" scoped></style>
+<style lang="less" scoped></style>

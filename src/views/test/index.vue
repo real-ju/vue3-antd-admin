@@ -4,4 +4,4 @@
 
 <script setup lang="ts" name="VTest"></script>
 
-<style lang="scss" scoped></style>
+<style lang="less" scoped></style>
