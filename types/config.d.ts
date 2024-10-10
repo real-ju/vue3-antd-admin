@@ -1,7 +1,8 @@
-import { RoutePermissionModeEnum } from '/@/enums/appEnum';
+import { RouteHistoryModeEnum, RoutePermissionModeEnum } from '/@/enums/appEnum';
 import { MenuModeEnum } from '/@/enums/layoutEnum';
 
 export interface ProjectSetting {
+  routeHistoryMode: RouteHistoryModeEnum;
   routePermissionMode: RoutePermissionModeEnum;
   showPageTitleSuffix: boolean;
   iconfontUrl: string;
