@@ -13,6 +13,7 @@ export function wrapEnv(env: ViteEnv) {
     if (Reflect.has(env, item)) {
       const envMap = JSON.parse(env[item]);
       if (envMap) {
+        env[item + '__ORIGIN'] = env[item];
         env[item] = envMap[CLIENT];
       }
     }
