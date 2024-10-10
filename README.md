@@ -34,6 +34,15 @@ vite + vue3 + ts + antd 项目模板
 - js，ts 文件：通过 vscode 的 eslint 插件，在保存时自动 fix
 - 其他文件：保存时使用 prettier 插件格式化
 - 代码提交时会执行格式化校验
+- 关闭 TS 校验（仅特殊情况下使用）：
+
+```js
+// 使用注释
+// 下一行生效：
+// @ts-ignore
+// 整个文件生效：
+// @ts-nocheck
+```
 
 ### 环境变量
 
@@ -102,3 +111,19 @@ design/theme 下每个文件夹表示一个主题。默认为 default，自定�
   2.design/theme/xxx/antd.less 中定义组件中 less 变量覆盖默认变量
 
 - 其他全局主题：design/theme/xxx/global 中定义 less 变量，在 construct/constant -> FILES_USE_GLOBAL_THEME_VAR 中添加需要引用全局主题变量的文件路径
+
+### GIT 提交规范
+
+参考 Angular 的提交信息规范：https://github.com/angular/angular/blob/main/CONTRIBUTING.md#commit
+
+#### type 说明
+
+- feat：新功能
+- fix：bug 修复
+- refactor：代码重构
+- perf：性能优化
+- build：架构代码
+- chore：公共代码（组件/工具库）
+- style：代码格式（不影响代码运行的变动）
+- docs：文档
+- revert：代码回退
