@@ -1,5 +1,9 @@
 <template>
-  <div class="container admin-layout" :class="{ 'mix-menu-mode': menuMode === MenuModeEnum.MIX }">
+  <div
+    class="container admin-layout"
+    :class="{ 'mix-menu-mode': menuMode === MenuModeEnum.MIX }"
+    ref="adminLayoutRef"
+  >
     <aside
       class="admin-layout-aside"
       :class="{ collapsed: siderCollapsed }"
@@ -110,6 +114,7 @@ import { goMenuFirstLeafNode } from '/@/logics/helper/layout';
 import AliveRouterView from '../aliveRouterView/index.vue';
 import { Modal } from 'ant-design-vue/es';
 import { BasicPageEnum } from '/@/enums/pageEnum';
+// import { useFullscreen } from '@vueuse/core';
 
 const router = useRouter();
 
@@ -127,7 +132,7 @@ const switchSider = (show: boolean) => {
 
 const layoutStore = useLayoutStore();
 
-const { menuMode, pageTabs, menuTree } = storeToRefs(layoutStore);
+const { menuMode, pageTabs, menuTree, adminLayoutEl } = storeToRefs(layoutStore);
 
 const { VITE_APP_TITLE: layoutTitle } = getEnv();
 
@@ -141,7 +146,7 @@ const onTabsChange = (key: string) => {
 
 const onTabsEdit = (key: string, action: string) => {
   if (action === 'remove') {
-    layoutStore.closePageTab(key);
+    layoutStore.closePageTabByFullPath(key);
   }
 };
 
@@ -175,6 +180,16 @@ const onTabsActionMenuClick = ({ item, key, keyPath }: any) => {
 const onLogoAreaClick = () => {
   goMenuFirstLeafNode(menuTree.value);
 };
+
+// const { isFullscreen, toggle: toggleFullscreen } = useFullscreen(adminLayoutEl.value);
+// watch(isFullscreen, (val) => {
+//   layoutStore.setFullscreen(val);
+// });
+
+const adminLayoutRef = ref();
+onMounted(() => {
+  layoutStore.setAdminLayoutEl(adminLayoutRef.value);
+});
 </script>
 
 <style lang="less" scoped>

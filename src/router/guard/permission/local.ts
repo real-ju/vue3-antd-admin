@@ -24,7 +24,7 @@ export function createLocalPermissionGuard(router: Router) {
           next({
             path: BasicPageEnum.LOGIN,
             query: {
-              back_url: from.name === null ? to.fullPath : from.fullPath
+              backUrl: from.name === null ? to.fullPath : from.fullPath
             }
           });
         }

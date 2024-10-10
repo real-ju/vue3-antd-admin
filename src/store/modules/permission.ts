@@ -1,7 +1,7 @@
+import type { PermissionState } from '/#/store';
+
 import { store } from '/@/store';
 import { defineStore } from 'pinia';
-
-import type { PermissionState } from '/#/store';
 
 export const usePermissionStore = defineStore({
   id: 'permission',
@@ -10,14 +10,22 @@ export const usePermissionStore = defineStore({
     routePermissions: [],
     actionPermissions: []
   }),
-  getters: {},
+  getters: {
+    allPermissions(state): string[] {
+      return [...state.routePermissions, ...state.actionPermissions];
+    }
+  },
   actions: {
-    // generatePermissions() {}
+    generatePermissions() {
+      this.routePermissions = [];
+      this.actionPermissions = [];
+      return true;
+    },
     clearPermissions() {
       this.routePermissions = [];
       this.actionPermissions = [];
       this.hasFetchedPermissionData = false;
-    },
+    }
   }
 });
 

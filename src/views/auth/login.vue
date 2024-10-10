@@ -38,6 +38,8 @@
 </template>
 
 <script setup lang="ts" name="VLogin">
+// import { setRememberLogin } from '/@/store/modules/user';
+
 const router = useRouter();
 const route = useRoute();
 
@@ -64,7 +66,8 @@ const handleSubmit = () => {
 const handleLogin = () => {};
 
 const handleLoginSuccess = () => {
-  const backUrl = route.query.back_url;
+  // setRememberLogin(true);
+  const backUrl = route.query.backUrl;
   const redirectUrl = backUrl ? decodeURIComponent(String(backUrl)) : '/';
   router.push(redirectUrl);
 };

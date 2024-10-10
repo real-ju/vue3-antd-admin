@@ -1,0 +1,10 @@
+/** less工具函数 */
+/** 此文件会自动引入到less文件中（包括.vue中的style标签） */
+
+.text-line-ellipsis(@num: 1) {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: @num;
+  -webkit-box-orient: vertical;
+}

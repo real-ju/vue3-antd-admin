@@ -1,10 +1,8 @@
 import axios from 'axios';
 import { axiosRequestConfig } from './config';
 import { useUserStore } from '/@/store/modules/user';
-import { router } from '/@/router';
 import { RequestMethodEnum, ContentTypeEnum } from '/@/enums/httpEnum';
 import qs from 'qs';
-import { BasicPageEnum } from '/@/enums/pageEnum';
 
 import type { AxiosInstance } from 'axios';
 import type {
@@ -35,10 +33,9 @@ export class Requester {
 
   private handleResponseError(response: any): void {
     const code = +response.data.code;
-    if (code === 10001) {
+    if (code === 401) {
       const userStore = useUserStore();
-      userStore.logout();
-      router.push(BasicPageEnum.LOGIN);
+      userStore.logout(false, true);
     }
 
     const requestOptions: Required<RequestOptions> = response.config.requestOptions;
@@ -65,7 +62,7 @@ export class Requester {
         if (requestOptions.auth && (userStore.isLogin || customToken)) {
           config.headers[requestOptions.authHeader] = customToken
             ? customToken
-            : userStore.getToken;
+            : 'Bearer ' + userStore.getToken;
         }
 
         // handle ContentType
@@ -223,7 +220,11 @@ export class Requester {
       this.axiosInstance
         .request(config)
         .then((res) => {
-          resolve(res.data);
+          if (!config.responseType) {
+            resolve(res.data);
+          } else {
+            resolve(res);
+          }
         })
         .catch((error) => {
           reject(error.response || error);

@@ -1,11 +1,12 @@
-import { defineStore } from 'pinia';
-import layoutSetting from '/@/settings/layoutSetting';
-import { generateMenuKeyPath } from '/@/logics/helper/layout';
-import { router } from '/@/router';
-import { BasicPageEnum } from '/@/enums/pageEnum';
-
 import type { LayoutState, TabInfo } from '/#/store';
 import type { RouteLocationNormalized } from 'vue-router';
+
+import { defineStore } from 'pinia';
+import layoutSetting from '/@/settings/layoutSetting';
+import { generateMenuPath } from '/@/logics/helper/layout';
+import { router } from '/@/router';
+import { BasicPageEnum } from '/@/enums/pageEnum';
+import { getFullPathWithoutHash } from '/@/router/helper/routeHelper';
 
 export const useLayoutStore = defineStore({
   id: 'layout',
@@ -15,7 +16,9 @@ export const useLayoutStore = defineStore({
     selectedMenuKeyPath: [],
     pageTabs: [],
     currentTabIndex: -1,
-    cachedRoutes: new Set()
+    cachedRoutes: new Set(),
+    adminLayoutEl: null,
+    isFullscreen: false
   }),
   getters: {
     currentTopMenuKey(state): string {
@@ -29,15 +32,21 @@ export const useLayoutStore = defineStore({
     }
   },
   actions: {
+    setFullscreen(value: boolean) {
+      this.isFullscreen = value;
+    },
+    setAdminLayoutEl(el: any) {
+      this.adminLayoutEl = el || null;
+    },
     refreshPage(route: RouteLocationNormalized) {
       if (route.meta.cache !== false) {
-        this.clearRouteCache(route.fullPath);
+        this.clearRouteCache(getFullPathWithoutHash(route));
       }
       router.replace(BasicPageEnum.REFRESH);
     },
     updateCachedRoutes(route: RouteLocationNormalized) {
       if (route.meta.cache !== false) {
-        this.cachedRoutes.add(route.fullPath);
+        this.cachedRoutes.add(getFullPathWithoutHash(route));
       }
     },
     clearRouteCache(fullPath: string) {
@@ -50,31 +59,32 @@ export const useLayoutStore = defineStore({
       if (!matchKey) {
         matchKey = route.name;
       }
-      const menuKeyPath = generateMenuKeyPath(this.menuTree, String(matchKey));
+      const { menuKeyPath } = generateMenuPath(this.menuTree, String(matchKey));
       this.selectedMenuKeyPath = menuKeyPath;
     },
     updatePageTabs(route: RouteLocationNormalized) {
-      if (route.meta.allowTabControl === false) {
-        this.currentTabIndex = -1;
-        return;
-      }
-
-      const fullPath = route.fullPath;
+      const fullPath = getFullPathWithoutHash(route);
       const tabIndex = this.pageTabs.findIndex((item: TabInfo) => {
         return item.route === fullPath;
       });
       if (tabIndex !== -1) {
         this.currentTabIndex = tabIndex;
       } else {
-        this.pageTabs.push({
-          route: fullPath,
-          title: route.meta.title,
-          cache: route.meta.cache || true
-        });
-        this.currentTabIndex = this.pageTabs.length - 1;
+        if (route.meta.allowTabControl !== false) {
+          this.pageTabs.push({
+            route: fullPath,
+            title: route.meta.title,
+            cache: route.meta.cache || true
+          });
+          this.currentTabIndex = this.pageTabs.length - 1;
+        }
       }
     },
-    closePageTab(key: string) {
+    closePageTab(route: RouteLocationNormalized) {
+      const fullPath = getFullPathWithoutHash(route);
+      this.closePageTabByFullPath(fullPath);
+    },
+    closePageTabByFullPath(key: string) {
       const tabIndex = this.pageTabs.findIndex((item: TabInfo) => {
         return item.route === key;
       });

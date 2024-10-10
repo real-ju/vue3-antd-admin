@@ -8,6 +8,7 @@ import { FILES_USE_GLOBAL_THEME_VAR } from './build/constant';
 export default ({ mode }: ConfigEnv): UserConfig => {
   const root = process.cwd();
   const env = loadEnv(mode, root);
+  env.MODE = mode;
 
   const viteEnv = wrapEnv(env);
 
@@ -46,13 +47,15 @@ export default ({ mode }: ConfigEnv): UserConfig => {
         less: {
           javascriptEnabled: true,
           additionalData: (content: string, filePath: string) => {
+            let rst: string = "@import '/@/design/util.less';";
             const path = FILES_USE_GLOBAL_THEME_VAR.find((item: string) => {
               return filePath.includes(item);
             });
             if (path) {
-              return "@import '/@/design/theme/default/global.less';" + content;
+              rst += "@import '/@/design/theme/default/global.less';";
             }
-            return content;
+            rst += content;
+            return rst;
           }
         }
       }

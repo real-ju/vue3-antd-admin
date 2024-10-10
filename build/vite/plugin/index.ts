@@ -5,6 +5,7 @@ import vueSetupExtend from 'vite-plugin-vue-setup-extend';
 import { configHtmlPlugin } from './html';
 import { configAutoImportPlugin } from './autoImport';
 import { configSvgIconsPlugin } from './svgSprite';
+import { configVueJsxPlugin } from './vueJsx';
 
 export function createVitePlugins(env: ViteEnv) {
   const vitePlugins: (Plugin | Plugin[] | PluginOption | PluginOption[])[] = [
@@ -16,6 +17,7 @@ export function createVitePlugins(env: ViteEnv) {
   vitePlugins.push(configHtmlPlugin(env));
   vitePlugins.push(configAutoImportPlugin());
   vitePlugins.push(configSvgIconsPlugin());
+  vitePlugins.push(configVueJsxPlugin());
 
   return vitePlugins;
 }

@@ -1,3 +1,5 @@
+import { Props as IconProps } from '/@/components/Icon';
+
 import { MenuModeEnum } from '/@/enums/layoutEnum';
 
 /* user module */
@@ -25,6 +27,8 @@ export interface LayoutState {
   pageTabs: TabInfo[];
   currentTabIndex: number;
   cachedRoutes: Set<string>;
+  adminLayoutEl: Nullable<HTMLElement>;
+  isFullscreen: boolean;
 }
 
 export interface TabInfo {
@@ -38,9 +42,6 @@ export type MenuTree = MenuItem[];
 export interface MenuItem {
   title: string;
   key: string; // 暂时使用key作为路由跳转标志，匹配路由name，外链用link:http://baidu.com
-  icon?: {
-    type: string;
-    name: string;
-  };
+  icon?: IconProps;
   children?: MenuItem[];
 }

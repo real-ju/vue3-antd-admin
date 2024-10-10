@@ -1,9 +1,9 @@
 <template>
   <router-view v-slot="{ Component, route }">
-    <keep-alive :exclude="cacheInclude">
+    <keep-alive :include="cacheInclude">
       <component
         :is="route.meta.cache === false ? Component : warpRouteComponent(Component, route)"
-        :key="route.fullPath"
+        :key="getFullPathWithoutHash(route)"
       />
     </keep-alive>
   </router-view>
@@ -14,13 +14,14 @@ import type { VNode, Component } from 'vue';
 import type { RouteLocationNormalizedLoaded } from 'vue-router';
 
 import { useLayoutStore } from '/@/store/modules/layout';
+import { getFullPathWithoutHash } from '/@/router/helper/routeHelper';
 
 const routeCacheComponentMap = new Map();
 
 // 包装路由组件，修改组件名与fullPath关联，用于清空keep-alive缓存
 const warpRouteComponent = (component: VNode, route: RouteLocationNormalizedLoaded) => {
   const wrapperMap = routeCacheComponentMap;
-  const wrapperName = 'RouteCacheComponent_' + route.fullPath;
+  const wrapperName = 'RouteCacheComponent_' + getFullPathWithoutHash(route);
   let wrapper: Component;
   if (wrapperMap.has(wrapperName)) {
     wrapper = wrapperMap.get(wrapperName);

@@ -8,7 +8,7 @@ const IconFont = createFromIconfontCN({
   scriptUrl: projectSetting.iconfontUrl
 });
 
-interface Props {
+export interface Props {
   type: 'ant' | 'iconfont' | 'svg';
   name: string;
 }

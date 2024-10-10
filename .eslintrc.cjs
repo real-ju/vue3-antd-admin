@@ -9,6 +9,9 @@ module.exports = {
   parserOptions: {
     parser: '@typescript-eslint/parser',
     ecmaVersion: 'latest',
+    ecmaFeatures: {
+      jsx: true
+    },
     sourceType: 'module'
   },
   extends: [
@@ -31,6 +34,8 @@ module.exports = {
     '@typescript-eslint/ban-types': 'off',
     'no-undef': 'off',
     '@typescript-eslint/ban-ts-comment': 'off',
-    'vue/no-unused-vars': 'off'
+    'vue/no-unused-vars': 'off',
+    'no-empty': 'off',
+    'vue/no-mutating-props': 'off'
   }
 };

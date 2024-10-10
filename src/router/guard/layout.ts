@@ -17,8 +17,10 @@ export function createLayoutGuard(router: Router) {
     setPageTitle(to.meta.title, to.meta.hideTitleSuffix);
 
     const layoutStore = useLayoutStore();
+
     // 更新菜单选中
     layoutStore.updateSelectedMenuKeyPath(to);
+
     // 更新页签
     layoutStore.updatePageTabs(to);
 

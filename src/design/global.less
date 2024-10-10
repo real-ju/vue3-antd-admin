@@ -1,14 +1,13 @@
 // @import './font.less';
+@import './theme/default/global.less';
 
 /* 全局 */
 * {
   box-sizing: border-box;
-  scrollbar-width: thin;
-  scrollbar-color: #cccccc #f3f3f3;
 
   &::-webkit-scrollbar {
-    width: 10px;
-    height: 10px;
+    width: 12px;
+    height: 12px;
   }
 
   &::-webkit-scrollbar-thumb {
@@ -53,11 +52,64 @@ body {
 .basic-page {
   width: 100%;
   min-height: 100%;
-  background-color: #f0f2f5;
+  background-color: @page-bg-color;
+  padding: 16px;
+
+  .basic-page-card {
+    width: 100%;
+    background-color: #ffffff;
+    padding: 12px;
+    border-radius: 4px;
+    overflow: hidden;
+    &.no-padding {
+      padding: 0px;
+    }
+  }
 }
 
-// 修复nprogress显示问题
-#nprogress {
-  position: relative;
-  z-index: 1;
+.basic-table-action {
+  width: 100%;
+  .ant-btn + .ant-btn {
+    margin-left: 16px;
+  }
+}
+
+.basic-table-pagination {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  .tip {
+    i {
+      color: @primary-color;
+    }
+  }
+}
+
+.basic-link {
+  color: @link-color;
+  cursor: pointer;
+  &:hover {
+    text-decoration: underline;
+  }
+}
+
+// 主题变量
+.primary-color {
+  color: @primary-color;
+}
+.secondary-color {
+  color: @text-color-secondary;
+}
+.text-color {
+  color: @text-color;
+}
+.error-color {
+  color: @error-color;
+}
+.warning-color {
+  color: @warning-color;
+}
+.success-color {
+  color: @success-color;
 }
