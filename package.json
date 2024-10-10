@@ -11,7 +11,7 @@
     "preview": "vite preview",
     "type:check": "vue-tsc",
     "lint": "npm run lint:prettier && npm run lint:eslint",
-    "lint:prettier": "prettier --write \"src/**/*.{js,json,ts,tsx,css,less,scss,vue,html,md}\"",
+    "lint:prettier": "prettier --write \"src/**/*.{js,json,ts,tsx,css,less,scss,vue,html,md}\" \"types/**/*.{d.ts,ts}\"",
     "lint:eslint": "eslint --cache --fix \"src/**/*.{js,ts,tsx,vue}\" \"types/**/*.{d.ts,ts}\"",
     "prepare": "husky install",
     "lint-staged": "lint-staged"
@@ -61,6 +61,9 @@
   "lint-staged": {
     "src/**/*.{js,json,ts,tsx,css,less,scss,vue,html,md}": "prettier --write",
     "src/**/*.{js,ts,tsx,vue}": "eslint --cache --fix",
-    "types/**/*.{d.ts,ts}": "eslint --cache --fix"
+    "types/**/*.{d.ts,ts}": [
+      "prettier --write",
+      "eslint --cache --fix"
+    ]
   }
 }
