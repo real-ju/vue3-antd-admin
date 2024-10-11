@@ -52,7 +52,7 @@ const createStoreDef = () => {
   _useUserStore = useStore;
 };
 
-// 在(退出)登录成功后调用
+// 在(退出)登录成功后调用，调用后如需使用store则必须重新执行useUserStore创建
 export const setRememberLogin = (remember: boolean) => {
   storage.set('app-remember-login', remember);
   if (remember !== rememberLogin) {
