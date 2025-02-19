@@ -1,10 +1,11 @@
 <template>
-  <a-config-provider :locale="zhCN" :getPopupContainer="getPopupContainer">
+  <a-config-provider :theme="themeConfig" :locale="zhCN" :getPopupContainer="getPopupContainer">
     <router-view></router-view>
   </a-config-provider>
 </template>
 
 <script setup lang="ts">
+import themeConfig from '/@/design/theme/default/antdThemeConfig';
 import zhCN from 'ant-design-vue/es/locale/zh_CN';
 import { useLayoutStore } from '/@/store/modules/layout';
 

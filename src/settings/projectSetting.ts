@@ -1,6 +1,7 @@
-import type { ProjectSetting } from '/#/config';
+import type { ProjectSetting, StatusColorSetting } from '/#/config';
 
 import { RouteHistoryModeEnum, RoutePermissionModeEnum } from '/@/enums/appEnum';
+import globalThemeVars from '/@/design/theme/default/globalVars';
 
 const setting: ProjectSetting = {
   // 路由历史模式
@@ -13,4 +14,14 @@ const setting: ProjectSetting = {
   iconfontUrl: 'https://at.alicdn.com/t/c/font_3373343_xic7ab2dkh9.js'
 };
 
+const statusColorSetting: StatusColorSetting = {
+  default: globalThemeVars.primaryColor,
+  success: globalThemeVars.successColor,
+  processing: globalThemeVars.infoColor,
+  warning: globalThemeVars.warningColor,
+  error: globalThemeVars.errorColor,
+  disabled: globalThemeVars.disabledColor
+};
+
 export default setting;
+export { statusColorSetting };

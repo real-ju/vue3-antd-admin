@@ -11,16 +11,21 @@
   </div>
 </template>
 
-<script setup lang="ts" name="LTopMenu">
+<script setup lang="ts">
 import TreeMenu from '../TreeMenu/index.vue';
 import { useLayoutStore } from '/@/store/modules/layout';
 import { MenuModeEnum } from '/@/enums/layoutEnum';
-import { goMenuFirstLeafNode, handleGoFromMenuKey } from '/@/logics/helper/layout';
+import {
+  goMenuFirstLeafNode,
+  handleGoFromMenuKeyPath,
+  handleGoFromMenuNode
+} from '/@/logics/helper/layout';
 import layoutSetting from '/@/settings/layoutSetting';
 
 import type { MenuTree } from '/#/store';
 
 const layoutStore = useLayoutStore();
+const router = useRouter();
 
 const menuTree = layoutStore.menuTree;
 
@@ -48,6 +53,8 @@ const showMenuTree = computed(() => {
     return tree;
   } else if (menuMode.value === MenuModeEnum.SIDE) {
     return [];
+  } else {
+    return [];
   }
 });
 
@@ -65,7 +72,7 @@ const theme = computed(() => {
 
 const onMenuClick = ({ item, key, keyPath }: any) => {
   if (menuMode.value === MenuModeEnum.TOP) {
-    handleGoFromMenuKey(key);
+    handleGoFromMenuKeyPath(menuTree, keyPath);
   } else if (menuMode.value === MenuModeEnum.MIX) {
     const treeNode = menuTree.find((item) => {
       return item.key === key;
@@ -73,7 +80,7 @@ const onMenuClick = ({ item, key, keyPath }: any) => {
     if (treeNode?.children) {
       goMenuFirstLeafNode(treeNode.children);
     } else {
-      handleGoFromMenuKey(treeNode!.key);
+      handleGoFromMenuNode(treeNode!);
     }
   }
 };

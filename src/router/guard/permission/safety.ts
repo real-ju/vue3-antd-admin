@@ -40,7 +40,8 @@ function checkRoutePermission(to: RouteLocationNormalized) {
 const routeWhiteList: string[] = [
   ExceptionPageEnum.EXCEPTION_403,
   ExceptionPageEnum.EXCEPTION_404,
-  BasicPageEnum.REFRESH
+  BasicPageEnum.REFRESH,
+  BasicPageEnum.EXAMPLE
 ];
 
 export function createSafetyPermissionGuard(router: Router) {
@@ -51,13 +52,20 @@ export function createSafetyPermissionGuard(router: Router) {
       return;
     }
 
-    if (routeWhiteList.indexOf(to.path) !== -1) {
+    const userStore = useUserStore();
+    const isLogin = userStore.isLogin;
+
+    const isWhiteRoute = (() => {
+      const route = routeWhiteList.find((item) => {
+        return to.path.indexOf(item) === 0;
+      });
+      return !!route;
+    })();
+    if (isWhiteRoute) {
       next();
       return;
     }
 
-    const userStore = useUserStore();
-    const isLogin = userStore.isLogin;
     if (isLogin) {
       if (!permissionStore.hasFetchedPermissionData) {
         permissionStore.hasFetchedPermissionData = true;
@@ -113,7 +121,7 @@ export function createSafetyPermissionGuard(router: Router) {
   });
 
   router.onError((error) => {
-    if (MODE === 'production') {
+    if (MODE !== 'development') {
       router.push(ExceptionPageEnum.EXCEPTION_403);
     }
   });

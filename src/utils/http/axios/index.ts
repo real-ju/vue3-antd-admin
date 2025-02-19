@@ -9,12 +9,18 @@ function createRequester(options: RequestOptions = {}) {
 
 export const httpRequester = createRequester({
   validateCustomStatus: (response) => {
-    return true;
+    if (response.request.responseType === 'blob') {
+      return response.data instanceof Blob && response.data.type !== 'application/json';
+    }
+    const code = response.data?.code;
+    return code === 200 || false;
   },
-  handleCustomError: function (response) {
+  handleCustomError: function (response, { showErrorTip }) {
     const data = response.data;
-    if (data) {
-      message.error(data.message);
+    if (showErrorTip) {
+      if (data && data.msg) {
+        message.error(data.msg);
+      }
     }
   }
 });

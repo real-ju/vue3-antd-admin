@@ -1,74 +1,32 @@
+@import './global.less';
+
 /**
- * 用于覆盖antd less变量以及修改antd组件主题
+ * 修改antd组件主题
  */
 
-// 主色
-@primary-color: #4b38b3;
-// 主文本色
-@text-color: #212529;
-// 次文本色
-@text-color-secondary: #878a99;
-// 链接色
-@link-color: #4b38b3;
-// 成功色
-@success-color: #45cb85;
-// 警告色
-@warning-color: #ffbe0b;
-// 错误色
-@error-color: #f06548;
-// 失效色
-@disabled-color: rgba(0, 0, 0, 0.25);
-// 边框色
-@border-color-base: #ced4da;
-
-// 根字体大小
-@font-size-base: 13px;
-// 基础圆角
-@border-radius-base: 3px;
-
 // 按钮前图标间距
-.ant-btn > i + span {
-  margin-left: 8px;
-}
-
-// Tag
-.ant-tag {
-  border: none;
-}
-.ant-tag-default {
-  background-color: rgba(228, 225, 244, 1);
-  color: @primary-color;
-}
-.ant-tag-success {
-  background-color: rgba(227, 247, 237, 1);
-  color: #45cb85;
-}
-.ant-tag-error {
-  background-color: rgba(253, 232, 228, 1);
-  color: @error-color;
-}
-.ant-tag-warning {
-  background-color: rgba(255, 245, 218, 1);
-  color: @warning-color;
-}
-
-// Divider
-@divider-color: @border-color-base;
-@divider-vertical-gutter: 16px;
-.ant-divider-vertical {
-  height: 1.2em;
-  border-width: 2px;
+.ant-btn {
+  > i + span {
+    margin-left: 8px;
+  }
+  > svg + span {
+    margin-left: 8px;
+  }
 }
 
 // Table
-// row hover默认颜色：#fafafa
-@table-header-bg: #f3f6f9;
 .ant-table-wrapper {
+  // 行高度
+  .ant-table-cell {
+    padding: 12px 16px !important;
+  }
   .ant-table-thead > tr > th {
     font-weight: bold;
   }
-  // 已选中行样式，添加.selected即可
-  // :row-class-name="(record: any) => (currentRecord && record.id === currentRecord.id ? 'selected' : null)"
+  /**
+  已选中行样式，添加.selected即可
+  :row-class-name="(record: any) => (currentRecord && record.id === currentRecord.id ? 'selected' : null)"
+  */
   /**
   可选择鼠标提示：
   :deep {
@@ -76,18 +34,62 @@
       cursor: pointer;
     }
   }
-  详见RoleList.vue
   */
   .ant-table-row.selected {
     .ant-table-cell {
-      background-color: #e8e4f2;
+      background-color: #f0f5ff !important; // 默认勾选背景色
     }
   }
+  .ant-table-cell-fix-left-last::after {
+    visibility: hidden;
+  }
+  .ant-table-ping-left .ant-table-cell-fix-left-last::after {
+    visibility: visible;
+  }
+  // 表头列分割线颜色
+  // .ant-table-thead
+  //   > tr
+  //   > th:not(:last-child):not(.ant-table-selection-column):not(.ant-table-row-expand-icon-cell):not(
+  //     [colspan]
+  //   )::before {
+  //   background-color: #cccccc;
+  // }
 }
 
 // Empty
 .ant-empty {
   .ant-empty-description {
     color: rgba(0, 0, 0, 0.25);
+  }
+}
+
+// Modal
+.ant-modal {
+  .ant-modal-content {
+    padding: 0px;
+    .ant-modal-header {
+      padding: 12px 20px;
+      border-bottom: 1px solid #dddddd;
+      margin-bottom: 0px;
+    }
+    .ant-modal-footer {
+      padding: 12px 16px;
+      margin-top: 0px;
+    }
+    .ant-modal-close {
+      top: 14px;
+    }
+  }
+}
+.ant-modal-confirm {
+  .ant-modal-content {
+    padding: 16px;
+  }
+}
+
+// Tree
+.ant-tree {
+  .ant-tree-checkbox {
+    margin-block-start: 2px;
   }
 }

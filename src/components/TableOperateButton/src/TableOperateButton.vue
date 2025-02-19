@@ -1,19 +1,29 @@
 <template>
-  <button class="table-operate-button" :class="[type]">
+  <button
+    class="table-operate-button"
+    :class="[type, disabled ? 'disabled' : '']"
+    :disabled="disabled"
+  >
     <slot></slot>
   </button>
 </template>
 
-<script setup lang="ts" name="TableOperateButton">
+<script setup lang="ts">
 const props = defineProps({
   type: {
     type: String,
     default: 'default' // danger-危险
+  },
+  disabled: {
+    type: Boolean,
+    default: false
   }
 });
 </script>
 
 <style lang="less" scoped>
+@import '../../../design/theme/default/global.less';
+
 .table-operate-button {
   color: @primary-color;
   cursor: pointer;
@@ -29,6 +39,11 @@ const props = defineProps({
     &:hover {
       color: lighten(@error-color, 20%);
     }
+  }
+  &.disabled {
+    color: @text-color !important;
+    opacity: 0.5;
+    cursor: not-allowed !important;
   }
 }
 </style>

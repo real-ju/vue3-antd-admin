@@ -4,14 +4,14 @@ import * as AntIcons from '@ant-design/icons-vue';
 import { createFromIconfontCN } from '@ant-design/icons-vue';
 import projectSetting from '/@/settings/projectSetting';
 
-const IconFont = createFromIconfontCN({
-  scriptUrl: projectSetting.iconfontUrl
-});
-
 export interface Props {
   type: 'ant' | 'iconfont' | 'svg';
   name: string;
 }
+
+const IconFont = createFromIconfontCN({
+  scriptUrl: projectSetting.iconfontUrl
+});
 
 const Icon: FunctionalComponent<Props> = (props: Props) => {
   const { type = 'ant', name } = props;

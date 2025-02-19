@@ -80,26 +80,30 @@ export function getMenuFirstLeafNode(menuTree: MenuTree): MenuItem | null {
 }
 
 /**
- * 根据菜单key值跳转路由
- */
-export function handleGoFromMenuKey(key: string) {
-  if (key.indexOf('link:') === -1) {
-    router.push({
-      name: key
-    });
-  } else {
-    const arr = key.split(':');
-    arr.shift();
-    window.open(arr.join(':'));
-  }
-}
-
-/**
  * 跳转到菜单树第一个叶子节点
  */
 export function goMenuFirstLeafNode(menuTree: MenuTree) {
   const node = getMenuFirstLeafNode(menuTree);
   if (node) {
-    handleGoFromMenuKey(node.key);
+    handleGoFromMenuNode(node);
   }
 }
+
+/**
+ * 根据菜单节点跳转路由
+ */
+export function handleGoFromMenuNode(node: MenuItem) {
+  if (node.url) {
+    router.push(node.url);
+  }
+}
+
+/**
+ * 根据菜单节点路径跳转路由
+ */
+export const handleGoFromMenuKeyPath = (menuTree: MenuTree, keyPath: string[]) => {
+  const node = getMenuNodeFromKeyPath(menuTree, keyPath);
+  if (node && node.url) {
+    router.push(node.url);
+  }
+};

@@ -4,6 +4,12 @@
 .text-line-ellipsis(@num: 1) {
   overflow: hidden;
   text-overflow: ellipsis;
+  white-space: nowrap;
+  word-break: break-all;
+}
+
+.text-line-ellipsis(@num: 1) when (@num > 1) {
+  // 以下多行省略时需要
   display: -webkit-box;
   -webkit-line-clamp: @num;
   -webkit-box-orient: vertical;

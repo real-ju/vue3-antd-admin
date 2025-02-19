@@ -7,13 +7,13 @@
       <Icon name="PieChartOutlined" />
     </template>
     <template v-for="item in subMenuTree" :key="item.key">
-      <LRecursiveMenuItem v-if="item.children" :self="item" />
+      <RecursiveMenuItem v-if="item.children" :self="item" />
       <a-menu-item v-else :key="item.key">{{ item.title }}</a-menu-item>
     </template>
   </a-sub-menu>
 </template>
 
-<script setup lang="ts" name="LRecursiveMenuItem">
+<script setup lang="ts" name="RecursiveMenuItem">
 import type { MenuItem, MenuTree } from '/#/store';
 
 const props = defineProps({

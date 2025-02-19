@@ -7,7 +7,9 @@ export enum BasicPageEnum {
   // 首页
   HOME = '/dashboard',
   // 刷新路由
-  REFRESH = '/refresh'
+  REFRESH = '/refresh',
+  // 示例页面路由
+  EXAMPLE = '/example'
 }
 
 /**

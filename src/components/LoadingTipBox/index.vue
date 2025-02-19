@@ -4,12 +4,14 @@
     :class="{ float: float }"
     :style="{ height: boxHeight, backgroundColor: bgColor }"
   >
-    <a-spin :indicator="indicator" />
+    <Spin :indicator="indicator" />
   </div>
 </template>
 
-<script setup lang="ts" name="LoadingTipBox">
+<script setup lang="ts">
+import { Spin } from 'ant-design-vue/es';
 import { LoadingOutlined } from '@ant-design/icons-vue';
+import { computed, h } from 'vue';
 
 const props = defineProps({
   height: {

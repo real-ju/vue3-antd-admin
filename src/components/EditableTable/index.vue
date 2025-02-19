@@ -1,27 +1,27 @@
 <template>
   <div
     class="editable-table"
-    :class="{ scroll: props.tableProps.scroll?.y !== undefined }"
+    :class="{ scroll: tableProps.scroll?.y !== undefined }"
     v-if="tableProps && tableProps.columns && tableProps.dataSource"
   >
-    <Form ref="formRef" autocomplete="off" :model="tableProps.dataSource" :rules="formRules">
-      <Table
-        v-bind="props.tableProps"
-        size="middle"
-        :pagination="false"
-        bordered
-        :scroll="tableScroll"
-      >
+    <Form ref="formRef" autocomplete="off" :model="tableProps.dataSource">
+      <Table v-bind="tableProps" size="middle" :pagination="false" bordered :scroll="tableScroll">
         <template #headerCell="{ column }">
-          <template v-if="column.required">
-            <span>
-              <span class="warning-color">*</span>
-              {{ column.title }}
-            </span>
-          </template>
+          <slot :name="`col-${column.key}-header`">
+            <template v-if="column.required">
+              <span>
+                <span class="warning-color">*</span>
+                {{ column.title }}
+              </span>
+            </template>
+          </slot>
         </template>
         <template #bodyCell="{ column, record, index }">
-          <FormItem v-if="column.key && column.editComp" :name="[index, column.key]">
+          <FormItem
+            v-if="column.key && column.editComp"
+            :name="[index, column.key]"
+            :rules="getFormItemRules(index, column.key)"
+          >
             <component
               :is="compMap[getEditComp(column, { column, record, index }).type]"
               v-model:value="record[column.key]"
@@ -31,9 +31,14 @@
               <slot :name="`col-${column.key}-comp-slot`"></slot>
             </component>
           </FormItem>
-          <template v-else-if="$slots[`col-${column.key}`]">
+          <template v-else-if="$slots[`col-${column.key}-cell`]">
             <FormItem class="slot-column-form-item" :name="[index, column.key]">
-              <slot :name="`col-${column.key}`" :column="column" :record="record" :index="index">
+              <slot
+                :name="`col-${column.key}-cell`"
+                :column="column"
+                :record="record"
+                :index="index"
+              >
               </slot>
             </FormItem>
           </template>
@@ -50,8 +55,9 @@
 <script setup lang="ts">
 import type { PropType } from 'vue';
 import type { TableProps } from 'ant-design-vue/es';
+import type { ColumnsType } from 'ant-design-vue/es/table';
 
-import { ref, computed } from 'vue';
+import { ref, computed, nextTick } from 'vue';
 import { Table, Input, InputNumber, Select, AutoComplete, Form, FormItem } from 'ant-design-vue/es';
 
 const compMap: Record<string, any> = {
@@ -71,17 +77,18 @@ const props = defineProps({
   tableProps: {
     type: Object as PropType<
       TableProps & {
-        columns: Array<{
-          key: string;
-          required: boolean;
-          editComp:
-            | EditCompConfig
-            | ((cellData: {
-                column: Recordable;
-                record: Recordable;
-                index: number;
-              }) => EditCompConfig);
-        }>;
+        columns: ColumnsType &
+          Array<{
+            key: string;
+            required?: boolean;
+            editComp?:
+              | EditCompConfig
+              | ((cellData: {
+                  column: Recordable;
+                  record: Recordable;
+                  index: number;
+                }) => EditCompConfig);
+          }>;
       }
     >,
     default: null
@@ -112,26 +119,23 @@ const tableScroll = computed(() => {
   }
 });
 
-const formRules = computed<any>(() => {
-  if (!props.rules || !props.tableProps.dataSource) {
+const getFormItemRules = (index: number, name: string) => {
+  if (!props.rules) {
     return null;
   }
-  const dataSource = props.tableProps.dataSource;
-  const rules: Recordable[] = [];
-  for (let index = 0; index < dataSource.length; index++) {
-    if (typeof props.rules === 'function') {
-      rules.push(
-        props.rules({
-          record: dataSource[index],
-          index
-        })
-      );
-    } else {
-      rules.push(props.rules);
+  if (typeof props.rules === 'function') {
+    const dataSource = props.tableProps.dataSource;
+    if (!dataSource) {
+      return null;
     }
+    return props.rules({
+      record: dataSource[index],
+      index
+    })?.[name];
+  } else {
+    return props.rules[name];
   }
-  return rules;
-});
+};
 
 const getEditComp = (column: Recordable, cellData: Recordable) => {
   if (typeof column.editComp === 'function') {
@@ -147,9 +151,20 @@ const addRecord = () => {
   emit('addRecord', push);
 };
 
+// 行重新验证
+const rowReValidate = (rowIndex: number) => {
+  nextTick(() => {
+    props.tableProps.columns.forEach((item) => {
+      formRef.value.clearValidate([[rowIndex, item.key]]);
+      formRef.value.validate([[rowIndex, item.key]]);
+    });
+  });
+};
+
 defineExpose({
   formRef,
-  addRecord
+  addRecord,
+  rowReValidate
 });
 </script>
 
@@ -203,6 +218,10 @@ defineExpose({
                 flex: 1;
                 max-height: unset !important;
                 overflow-y: auto !important;
+                .ant-table-cell {
+                  padding-top: 12px;
+                  padding-bottom: 12px;
+                }
                 .ant-table-placeholder {
                   display: none;
                 }

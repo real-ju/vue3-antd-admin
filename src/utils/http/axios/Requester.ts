@@ -1,9 +1,3 @@
-import axios from 'axios';
-import { axiosRequestConfig } from './config';
-import { useUserStore } from '/@/store/modules/user';
-import { RequestMethodEnum, ContentTypeEnum } from '/@/enums/httpEnum';
-import qs from 'qs';
-
 import type { AxiosInstance } from 'axios';
 import type {
   RequestOptions,
@@ -12,6 +6,12 @@ import type {
   RequestParams,
   UploadFileParams
 } from './types';
+
+import axios from 'axios';
+import { axiosRequestConfig } from './config';
+import { useUserStore } from '/@/store/modules/user';
+import { RequestMethodEnum, ContentTypeEnum } from '/@/enums/httpEnum';
+import qs from 'qs';
 
 export class Requester {
   private axiosRequestConfig: FullExpandRequestConfig; // 实例请求配置
@@ -120,24 +120,28 @@ export class Requester {
 
   uploadFile(params: UploadFileParams, options?: RequestOptions) {
     const formData = new FormData();
-    const customFileName = params.name || 'file';
 
-    const files = ([] as Blob[]).concat(params.file);
-    const nameField = files.length === 1 ? customFileName : `${customFileName}[]`;
-    files.forEach((file) => {
-      if (params.filename) {
-        formData.append(nameField, file, params.filename);
-      } else {
-        formData.append(nameField, file);
-      }
-    });
+    if (params.file) {
+      const customFileName = params.name || 'file';
+      const files = ([] as Blob[]).concat(params.file);
+      const nameField = !Array.isArray(params.file)
+        ? customFileName
+        : `${customFileName}${params.arrayKeyType === 2 ? '[]' : ''}`;
+      files.forEach((file) => {
+        if (params.filename) {
+          formData.append(nameField, file, params.filename);
+        } else {
+          formData.append(nameField, file);
+        }
+      });
+    }
 
     if (params.data) {
       Object.keys(params.data).forEach((key) => {
         const value = params.data![key];
         if (Array.isArray(value)) {
           value.forEach((item) => {
-            formData.append(`${key}[]`, item);
+            formData.append(`${key}${params.arrayKeyType === 2 ? '[]' : ''}`, item);
           });
         } else {
           formData.append(key, value);
@@ -147,17 +151,29 @@ export class Requester {
 
     options = options || {};
 
-    return this.request(
-      {
-        url: params.url,
-        method: RequestMethodEnum.POST,
-        data: formData
-      },
-      {
-        ...options,
-        contentType: ContentTypeEnum.FORM_DATA
-      }
-    );
+    const requestParams: RequestParams = {
+      url: params.url,
+      method: RequestMethodEnum.POST,
+      data: formData,
+      ...(params.extraRequestParams || {})
+    };
+    if (params.onUploadProgress) {
+      requestParams.onUploadProgress = (progressEvent: any) => {
+        let progress = Math.floor((progressEvent.loaded / progressEvent.total) * 100);
+        if (progress === 100) {
+          progress = 99;
+        }
+        params.onUploadProgress!(progress);
+      };
+    }
+
+    return this.request(requestParams, {
+      ...options,
+      contentType: ContentTypeEnum.FORM_DATA
+    }).then((res) => {
+      params.onUploadProgress?.(100);
+      return res;
+    });
   }
 
   get(requestParams: Omit<RequestParams, 'method'>, options?: RequestOptions) {

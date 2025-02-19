@@ -1,14 +1,15 @@
 <template>
-  <a-modal
+  <Modal
     class="basic-modal"
     v-bind="props.modalProps"
+    :title="status ? undefined : props.modalProps.title"
     :visible="visible"
     @update:visible="onUpdateVisible"
   >
     <template v-if="loadingTipHeight">
       <div
         class="modal-content"
-        :class="{ scroll: scrollY }"
+        :class="{ scroll: scrollY, 'no-padding': contentNoPadding }"
         :style="{ maxHeight: scrollY ? `${scrollY}px` : undefined }"
         v-if="!modalLoading"
       >
@@ -19,16 +20,35 @@
     <div
       v-else
       class="modal-content"
-      :class="{ scroll: scrollY }"
+      :class="{ scroll: scrollY, 'no-padding': contentNoPadding }"
       :style="{ maxHeight: scrollY ? `${scrollY}px` : undefined }"
     >
       <slot></slot>
       <LoadingTipBox v-if="modalLoading" height="100%" float />
     </div>
+    <template #title v-if="status">
+      <div class="custom-title">
+        <Icon
+          v-if="status === 'success'"
+          class="status-icon success"
+          type="ant"
+          name="CheckCircleOutlined"
+        >
+        </Icon>
+        <Icon
+          v-else-if="status === 'error'"
+          class="status-icon error"
+          type="ant"
+          name="CloseCircleOutlined"
+        >
+        </Icon>
+        <span>{{ modalProps.title || '' }}</span>
+      </div>
+    </template>
     <template #footer>
       <slot name="footer">
-        <a-button @click="onModalCancel">取消</a-button>
-        <a-button
+        <Button @click="onModalCancel">取消</Button>
+        <Button
           type="primary"
           :disabled="modalLoading"
           :loading="confirmBtnLoading"
@@ -36,13 +56,17 @@
           @click="onModalConfirm"
         >
           确定
-        </a-button>
+        </Button>
       </slot>
     </template>
-  </a-modal>
+  </Modal>
 </template>
 
-<script setup lang="ts" name="BasicModal">
+<script setup lang="ts">
+import { Modal, Button } from 'ant-design-vue/es';
+import LoadingTipBox from '../LoadingTipBox/index.vue';
+import Icon from '../Icon';
+
 const props = defineProps({
   visible: {
     type: Boolean,
@@ -76,6 +100,14 @@ const props = defineProps({
   scrollY: {
     type: Number,
     default: null
+  },
+  status: {
+    type: String,
+    default: ''
+  },
+  contentNoPadding: {
+    type: Boolean,
+    default: false
   }
 });
 
@@ -99,19 +131,32 @@ const onModalConfirm = () => {
 </script>
 
 <style lang="less" scoped>
+@import '../../design/theme/default/global.less';
+
 .modal-content {
   width: 100%;
   padding: 24px;
   padding-bottom: 0px;
+  position: relative;
   &.scroll {
     overflow-y: auto;
   }
+  &.no-padding {
+    padding: 0px;
+  }
 }
-
-:global(.basic-modal .ant-modal-body) {
-  padding: 0px;
-}
-:global(.basic-modal .ant-modal-footer) {
-  border-top: none;
+.custom-title {
+  display: flex;
+  align-items: center;
+  .status-icon {
+    font-size: 20px;
+    margin-right: 10px;
+    &.success {
+      color: @success-color;
+    }
+    &.error {
+      color: @error-color;
+    }
+  }
 }
 </style>

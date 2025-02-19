@@ -39,9 +39,15 @@ export interface UploadFileParams {
   // File parameter interface field name
   name?: string;
   // File data
-  file: File | Blob | File[] | Blob[];
+  file?: File | Blob | File[] | Blob[];
   // File name
   filename?: string;
   // Other parameters
   data?: Recordable;
+  // 数组格式数据在FormData上的key格式，1-没有[] 2-有[]
+  arrayKeyType?: 1 | 2;
+  // 文件上传进度回调
+  onUploadProgress?: (progress: number) => void;
+  // 额外的请求参数
+  extraRequestParams?: Omit<AxiosRequestConfig, 'url' | 'method' | 'data'>;
 }

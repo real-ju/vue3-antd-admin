@@ -13,3 +13,12 @@ export interface LayoutSetting {
   hiddenMixTopMenuKeys: string[];
   flatDirKeys: string[];
 }
+
+export interface StatusColorSetting {
+  default: string;
+  success: string;
+  processing: string;
+  warning: string;
+  error: string;
+  disabled: string;
+}

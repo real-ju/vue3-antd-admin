@@ -103,7 +103,7 @@
   </div>
 </template>
 
-<script setup lang="ts" name="LAdmin">
+<script setup lang="ts">
 import SiderMenu from './menu/SiderMenu/index.vue';
 import TopMenu from './menu/TopMenu/index.vue';
 import { useLayoutStore } from '/@/store/modules/layout';

@@ -24,14 +24,14 @@
   </div>
 </template>
 
-<script setup lang="ts" name="LTreeMenu">
+<script setup lang="ts">
 import type { MenuTree } from '/#/store';
 
 import RecursiveMenuItem from '../RecursiveMenuItem/index.vue';
 
 const props = defineProps({
   menuTree: {
-    type: Object as PropType<MenuTree>,
+    type: Array as PropType<MenuTree>,
     default: () => {
       return [];
     }
@@ -45,13 +45,13 @@ const props = defineProps({
     default: 'light'
   },
   selectedKeys: {
-    type: Object as PropType<string[]>,
+    type: Array as PropType<string[]>,
     default: () => {
       return [];
     }
   },
   openKeys: {
-    type: Object as PropType<string[]>,
+    type: Array as PropType<string[]>,
     default: () => {
       return [];
     }

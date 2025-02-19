@@ -13,11 +13,11 @@
   </div>
 </template>
 
-<script setup lang="ts" name="LSiderMenu">
+<script setup lang="ts">
 import TreeMenu from '../TreeMenu/index.vue';
 import { useLayoutStore } from '/@/store/modules/layout';
 import { MenuModeEnum } from '/@/enums/layoutEnum';
-import { handleGoFromMenuKey } from '/@/logics/helper/layout';
+import { handleGoFromMenuKeyPath } from '/@/logics/helper/layout';
 
 const props = defineProps({
   collapsed: {
@@ -46,6 +46,8 @@ const showMenuTree = computed(() => {
     return treeNode?.children || [];
   } else if (menuMode.value === MenuModeEnum.TOP) {
     return [];
+  } else {
+    return [];
   }
 });
 
@@ -62,7 +64,7 @@ const openKeys = computed(() => {
 });
 
 const onMenuClick = ({ item, key, keyPath }: any) => {
-  handleGoFromMenuKey(key);
+  handleGoFromMenuKeyPath(menuTree, keyPath);
 };
 
 watch(
