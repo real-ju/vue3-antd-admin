@@ -8,7 +8,7 @@
   </div>
 </template>
 
-<script lang="ts" setup name="VException">
+<script lang="ts" setup>
 import { useRouter } from 'vue-router';
 
 const props = defineProps({

@@ -37,7 +37,7 @@
   </div>
 </template>
 
-<script setup lang="ts" name="VLogin">
+<script setup lang="ts">
 // import { setRememberLogin } from '/@/store/modules/user';
 
 const router = useRouter();

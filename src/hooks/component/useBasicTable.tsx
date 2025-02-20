@@ -2,7 +2,7 @@ import type { Ref } from 'vue';
 import type { TableColumnType } from 'ant-design-vue/es';
 import type { Dict } from '/@/logics/dict';
 
-import TablePopover from '/@/views/common/TablePopover/index.vue';
+import BasicPopover from '/@/components/BasicPopover/index.vue';
 
 export type ColumnConfig = TableColumnType & {
   key: string;
@@ -328,7 +328,7 @@ export const useBasicTable = (config: BasicTableConfig) => {
               popover = {};
             }
             text = String(text);
-            return <TablePopover title={item.title} value={text} {...popover}></TablePopover>;
+            return <BasicPopover title={item.title} value={text} {...popover}></BasicPopover>;
           } else {
             return text;
           }

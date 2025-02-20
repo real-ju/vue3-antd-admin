@@ -21,6 +21,7 @@ vite + vue3 + ts + antd 项目模板
 
 - vscode 安装工作区推荐的插件
 - .vscode/settings.json 为工作区设置，不建议覆盖已有配置（可添加其他配置）
+- 依赖安装工具：yarn
 
 ### 多人开发过程中禁止私人修改的文件
 
@@ -59,7 +60,7 @@ vite + vue3 + ts + antd 项目模板
 
 - 除了组件和资源文件，都使用首字母小写的驼峰式命名
 - 组件需要使用文件夹包裹起来，且采用首字母大写的驼峰式命名（为了方便在 setup 中使用：https://cn.vuejs.org/api/sfc-script-setup.html#using-components）
-- 资源文件建议按页面分文件夹
+- API 文件、资源文件建议按页面划分文件夹
 
 ### 别名
 
@@ -77,8 +78,7 @@ vite + vue3 + ts + antd 项目模板
 
 ### 全局组件注册
 
-- 需要在 components/registerGlobComp 中手动注册
-- 引入 antd 组件也要在 design 中引入组件的样式文件
+在 components/registerGlobComp 中注册
 
 ### 关于引用 Ant Design 中的资源路径
 
@@ -99,18 +99,19 @@ vite + vue3 + ts + antd 项目模板
 - settings：运行时的参数设置
 - utils：完全通用的工具代码（可直接拖到其他项目也能使用）
 - hooks：Vue3 Hooks
+- views/common：业务通用组件、弹窗
 
 ### 主题
 
-design/theme 下每个文件夹表示一个主题。默认为 default，自定义主题请自行修改 design/antd.less 和 vite.config.ts 中的路径。（目前暂未实现运行时动态修改主题，有想法的朋友欢迎提 issues）
+design/theme 下每个文件夹表示一个主题。默认为 default，自定义主题请自行修改 design/antd.less 和 vite.config.ts 中的路径。
 
 - 修改 Antd 组件库主题：
 
-  1.design/antd.less 中引入 Antd 组件的样式文件
+  1.App.vue 中配置 theme
 
-  2.design/theme/xxx/antd.less 中定义组件中 less 变量覆盖默认变量
+  2.design/theme/xxx/antd.less 中覆盖组件样式
 
-- 其他全局主题：design/theme/xxx/global 中定义 less 变量，在 construct/constant -> FILES_USE_GLOBAL_THEME_VAR 中添加需要引用全局主题变量的文件路径
+- 其他全局主题：引用 design/theme/xxx/global.less 中定义 less 变量使用
 
 ### GIT 提交规范
 
