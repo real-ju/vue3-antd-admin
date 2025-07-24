@@ -1,7 +1,5 @@
 import type { RouteRecordRaw } from 'vue-router';
 
-import { asyncLayoutImport, asyncViewImport } from '/@/router/helper/asyncComponentImport';
-
 const admin: RouteRecordRaw = {
   path: '/',
   name: 'admin',
@@ -9,7 +7,7 @@ const admin: RouteRecordRaw = {
     title: 'Admin',
     public: false
   },
-  component: asyncLayoutImport('admin/index.vue'),
+  component: () => import('../../../layouts/admin/index.vue'),
   children: [
     {
       path: 'test',
@@ -17,7 +15,7 @@ const admin: RouteRecordRaw = {
       meta: {
         title: '测试'
       },
-      component: asyncViewImport('test/index.vue')
+      component: () => import('../../../views/test/index.vue')
     }
   ]
 };

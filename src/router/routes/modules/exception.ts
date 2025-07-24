@@ -1,7 +1,5 @@
 import type { RouteRecordRaw } from 'vue-router';
 
-import { asyncViewImport } from '/@/router/helper/asyncComponentImport';
-
 const exception: RouteRecordRaw[] = [
   {
     path: '/404',
@@ -12,7 +10,7 @@ const exception: RouteRecordRaw[] = [
       hideTitleSuffix: true,
       allowTabControl: false
     },
-    component: asyncViewImport('exception/index.vue'),
+    component: () => import('../../../views/exception/index.vue'),
     props: { code: 404 }
   },
   {
@@ -24,7 +22,7 @@ const exception: RouteRecordRaw[] = [
       hideTitleSuffix: true,
       allowTabControl: false
     },
-    component: asyncViewImport('exception/index.vue'),
+    component: () => import('../../../views/exception/index.vue'),
     props: { code: 403 }
   }
 ];

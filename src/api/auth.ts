@@ -1,4 +1,4 @@
-import { httpRequester } from '/@/utils/http/axios';
+import { httpRequester } from '/@/logics/http';
 
 enum Api {
   // 获取权限数据

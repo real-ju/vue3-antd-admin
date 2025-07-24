@@ -1,4 +1,17 @@
 /**
+ * 数组分组
+ * @param arr 原数组
+ * @param chunkSize 分组大小
+ */
+export function chunkArray(arr: any[], chunkSize: number) {
+  const chunks = [];
+  for (let i = 0; i < arr.length; i += chunkSize) {
+    chunks.push(arr.slice(i, i + chunkSize));
+  }
+  return chunks;
+}
+
+/**
  * 数组字段翻译（常用于字典翻译）
  * @param arr 数组
  * @param origin 原字段
@@ -17,4 +30,15 @@ export function translate(
     return '';
   }
   return item[target];
+}
+
+/**
+ * 数组转为map
+ */
+export function arrayToMap(arr: Recordable[], keyField: string, valueField: string): Recordable {
+  const map: Recordable = {};
+  arr.forEach((item) => {
+    map[item[keyField]] = item[valueField];
+  });
+  return map;
 }

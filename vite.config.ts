@@ -2,7 +2,6 @@ import type { UserConfig, ConfigEnv } from 'vite';
 import { loadEnv } from 'vite';
 import { createVitePlugins } from './build/vite/plugin';
 import { wrapEnv, pathResolve } from './build/utils';
-import { FILES_USE_GLOBAL_THEME_VAR } from './build/constant';
 
 // https://vitejs.dev/config/
 export default ({ mode }: ConfigEnv): UserConfig => {
@@ -40,7 +39,7 @@ export default ({ mode }: ConfigEnv): UserConfig => {
       }
     },
     define: {
-      'process.env.VITE_ENV': viteEnv
+      __VITE_ENV__: viteEnv
     },
     css: {
       preprocessorOptions: {
@@ -48,12 +47,6 @@ export default ({ mode }: ConfigEnv): UserConfig => {
           javascriptEnabled: true,
           additionalData: (content: string, filePath: string) => {
             let rst: string = "@import '/@/design/util.less';";
-            const path = FILES_USE_GLOBAL_THEME_VAR.find((item: string) => {
-              return filePath.includes(item);
-            });
-            if (path) {
-              rst += "@import '/@/design/theme/default/global.less';";
-            }
             rst += content;
             return rst;
           }
@@ -61,7 +54,7 @@ export default ({ mode }: ConfigEnv): UserConfig => {
       }
     },
     build: {
-      // outDir: 'dist' + viteEnv.VITE_PUBLIC_PATH,
+      outDir: 'dist' + viteEnv.VITE_PUBLIC_PATH,
       sourcemap: mode === 'development'
     }
   };

@@ -1,4 +1,4 @@
-import type { AxiosRequestConfig, AxiosInstance } from 'axios';
+import type { AxiosInstance } from 'axios';
 import type {
   RequestOptions,
   ExpandRequestConfig,
@@ -8,49 +8,43 @@ import type {
 } from './types';
 
 import axios from 'axios';
-import { defaultAxiosRequestConfig, defaultRequestOptions } from './config';
-import { RequestMethodEnum, ContentTypeEnum } from '../enum';
+import { axiosRequestConfig } from './config';
+import { useUserStore } from '/@/store/modules/user';
+import { RequestMethodEnum, ContentTypeEnum } from '/@/enums/httpEnum';
 import qs from 'qs';
 
 export class Requester {
   private axiosRequestConfig: FullExpandRequestConfig; // 实例请求配置
   private axiosInstance: AxiosInstance;
 
-  constructor(config: AxiosRequestConfig = {}, options: RequestOptions = {}) {
-    this.axiosRequestConfig = this.computeAxiosRequestConfig(config, options);
+  constructor(options: RequestOptions = {}) {
+    this.axiosRequestConfig = this.computeAxiosRequestConfig(axiosRequestConfig, options);
     this.axiosInstance = axios.create(this.axiosRequestConfig);
     this.setupInterceptors();
   }
 
   private computeAxiosRequestConfig(
-    config: AxiosRequestConfig,
+    config: FullExpandRequestConfig,
     options: RequestOptions
   ): FullExpandRequestConfig {
-    const _config: FullExpandRequestConfig = {
-      ...defaultAxiosRequestConfig,
-      ...config,
-      requestOptions: {
-        ...defaultRequestOptions,
-        ...options
-      }
-    };
-    return _config;
+    Object.assign(config.requestOptions!, options);
+    return config;
   }
 
   private handleResponseError(response: any): void {
-    const requestOptions: Required<RequestOptions> = response.config.requestOptions;
+    const code = +response.data.code;
+    if (code === 401) {
+      const userStore = useUserStore();
+      userStore.logout(false, true);
+    }
 
+    const requestOptions: Required<RequestOptions> = response.config.requestOptions;
     const handleCustomError = requestOptions.handleCustomError;
 
     handleCustomError &&
       handleCustomError(response, {
         showErrorTip: requestOptions.showCustomErrorTip
       });
-
-    const code = +response.data.code;
-    if (code === 401) {
-      requestOptions.handleUnauthorized();
-    }
   }
 
   private setupInterceptors(): void {
@@ -58,30 +52,24 @@ export class Requester {
     this.axiosInstance.interceptors.request.use(
       // @ts-ignore
       (config: FullExpandRequestConfig) => {
+        config.headers = config.headers || {};
+
         const requestOptions = config.requestOptions;
-        const defaultHeaders: Recordable = {};
 
         // handle token
-        const token = requestOptions.getToken();
+        const userStore = useUserStore();
         const customToken = requestOptions.customToken;
-        if (requestOptions.auth && (!!token || customToken)) {
-          defaultHeaders[requestOptions.authHeader] = customToken
+        if (requestOptions.auth && (userStore.isLogin || customToken)) {
+          config.headers[requestOptions.authHeader] = customToken
             ? customToken
-            : requestOptions.tokenPrefix
-            ? requestOptions.tokenPrefix + token
-            : token;
+            : 'Bearer ' + userStore.getToken;
         }
 
         // handle ContentType
-        defaultHeaders['Content-Type'] = requestOptions.contentType;
-
-        config.headers = {
-          ...defaultHeaders,
-          ...(config.headers || {})
-        };
+        const contentType = (config.headers['Content-Type'] = requestOptions.contentType);
 
         if (
-          config.headers['Content-Type'] === ContentTypeEnum.FORM_URLENCODED &&
+          contentType === ContentTypeEnum.FORM_URLENCODED &&
           config.method !== RequestMethodEnum.GET &&
           Reflect.has(config, 'data')
         ) {
@@ -240,7 +228,7 @@ export class Requester {
       };
 
       if (method === RequestMethodEnum.GET) {
-        config.params = { ...config.params, ...data };
+        config.params = data;
       } else {
         config.data = data;
       }

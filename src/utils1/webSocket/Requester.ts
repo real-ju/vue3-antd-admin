@@ -1,7 +1,8 @@
 import type { ConstructorConfig, SubscribeFunc } from './types';
 
 import { SendMsgType } from './types';
-import { throttle } from '../index';
+import { throttle } from '/@/utils';
+import { useUserStore } from '/@/store/modules/user';
 
 export class WebSocketRequester {
   // 配置
@@ -61,10 +62,11 @@ export class WebSocketRequester {
    * 创建WebSocket
    */
   createWebSocket() {
-    const { url, getToken } = this.config;
+    const userStore = useUserStore();
+    const { url } = this.config;
     const header: Recordable = {};
-    const token = getToken();
-    if (token) {
+    if (userStore.isLogin) {
+      const token = userStore.getToken;
       header['Authorization'] = token;
     }
     const instance = new WebSocket(url);
@@ -103,14 +105,12 @@ export class WebSocketRequester {
   }
 
   onClose(event: CloseEvent) {
-    console.log('WebSocket onClase', event);
-    if (event.code !== 1000) {
+    if (event.code! == 1000) {
       this.reconnect();
     }
   }
 
   onError(event: Event) {
-    console.log('WebSocket onError', event);
     this.reconnect();
   }
 
@@ -120,16 +120,13 @@ export class WebSocketRequester {
     }
     const data = JSON.parse(event.data);
     if (data) {
-      this.subscribeFuncList.forEach((func) => {
-        func(data);
-      });
-      // if (data.type === "heart") {
-      //   this.handleHeartCheckSuccess();
-      // } else if (data.type === "message") {
-      //   this.subscribeFuncList.forEach((func) => {
-      //     func(data.data);
-      //   });
-      // }
+      if (data.type === 'heart') {
+        this.handleHeartCheckSuccess();
+      } else if (data.type === 'message') {
+        this.subscribeFuncList.forEach((func) => {
+          func(data.data);
+        });
+      }
     }
   }
 
@@ -141,12 +138,8 @@ export class WebSocketRequester {
     this.instance?.send(
       JSON.stringify({
         type,
-        ...data
+        data
       })
-      // JSON.stringify({
-      //   type,
-      //   data,
-      // })
     );
   }
 

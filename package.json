@@ -53,18 +53,15 @@
     "typescript": "^5.0.2",
     "unplugin-auto-import": "^0.15.1",
     "vite": "5.4.11",
+    "vite-plugin-conditional-compile": "^1.4.5",
     "vite-plugin-html": "^3.2.0",
     "vite-plugin-svg-icons": "^2.0.1",
     "vite-plugin-vue-setup-extend": "^0.4.0",
     "vue-eslint-parser": "^9.1.0",
     "vue-tsc": "^1.2.0"
   },
-  "lint-staged": {
-    "src/**/*.{js,json,ts,tsx,css,less,scss,vue,html,md}": "prettier --write",
-    "src/**/*.{js,ts,tsx,vue}": "eslint --cache --fix",
-    "types/**/*.{d.ts,ts}": [
-      "prettier --write",
-      "eslint --cache --fix"
-    ]
+  "engines": {
+    "node": "^18.19.0",
+    "yarn": "^1.22.0"
   }
 }

@@ -8,14 +8,14 @@ import projectSetting from '/@/settings/projectSetting';
 import { RouteHistoryModeEnum } from '/@/enums/appEnum';
 
 const { routeHistoryMode } = projectSetting;
-const publicPath = getEnv().VITE_PUBLIC_PATH;
+const { VITE_ROUTER_BASE } = getEnv();
 
 // router instance
 export const router = createRouter({
   history:
     routeHistoryMode === RouteHistoryModeEnum.HTML5
-      ? createWebHistory(publicPath)
-      : createWebHashHistory(publicPath),
+      ? createWebHistory(VITE_ROUTER_BASE)
+      : createWebHashHistory(VITE_ROUTER_BASE),
   routes,
   scrollBehavior(to, from, savedPosition) {
     if (to.hash) {

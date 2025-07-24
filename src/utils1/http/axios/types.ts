@@ -1,18 +1,15 @@
 import type { AxiosRequestConfig } from 'axios';
 
-import { ContentTypeEnum, RequestMethodEnum } from '../enum';
+import { ContentTypeEnum, RequestMethodEnum } from '/@/enums/httpEnum';
 
 export interface RequestOptions {
   auth?: boolean;
   contentType?: ContentTypeEnum;
   customToken?: string | false;
   authHeader?: string;
-  tokenPrefix?: string;
   validateCustomStatus?: (response: any) => boolean;
   handleCustomError?: CustomErrorHandler | null;
   showCustomErrorTip?: boolean;
-  getToken?: () => string | null | undefined;
-  handleUnauthorized?: () => void;
 }
 
 interface CustomErrorHandler {
@@ -27,15 +24,9 @@ export interface ExpandRequestConfig extends AxiosRequestConfig {
   requestOptions?: RequestOptions;
 }
 
-export interface FullExpandRequestConfig extends AxiosRequestConfig {
+export type FullExpandRequestConfig = Omit<ExpandRequestConfig, 'requestOptions'> & {
   requestOptions: Required<RequestOptions>;
-}
-// export type FullExpandRequestConfig = Omit<
-//   ExpandRequestConfig,
-//   "requestOptions"
-// > & {
-//   requestOptions: Required<RequestOptions>;
-// };
+};
 
 export type RequestParams = AxiosRequestConfig & {
   url: string;

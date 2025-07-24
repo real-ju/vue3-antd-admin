@@ -1,10 +1,10 @@
 import type { Ref } from 'vue';
 
-import { createWebSocketRequester } from '/@/utils/webSocket';
 import { useUserStore } from '/@/store/modules/user';
 import { getEnv } from '/@/utils/env';
+import { createWebSocketRequester } from '/@/logics/webSocket';
 
-const { VITE_WS_URL, PKG } = getEnv();
+const { VITE_WS_URL, MODE } = getEnv();
 
 let requester: Ref<any> = ref<any>(null);
 
@@ -22,9 +22,18 @@ export function useNoticeWS() {
       return;
     }
 
-    const url = `${VITE_WS_URL}${PKG}?token=${userStore.getToken}`;
+    let url = '';
+    if (MODE === 'development') {
+      url = `${VITE_WS_URL}?token=${userStore.getToken}`;
+    } else {
+      const protocol = window.location.protocol === 'https:' ? 'wss' : 'ws';
+      url = `${protocol}://${window.location.host}${VITE_WS_URL}?token=${userStore.getToken}`;
+    }
     requester.value = createWebSocketRequester({
-      url
+      url,
+      getToken: () => {
+        return userStore.getToken;
+      }
     });
 
     return requester;

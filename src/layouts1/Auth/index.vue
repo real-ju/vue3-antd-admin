@@ -19,7 +19,7 @@
 </template>
 
 <script setup lang="ts">
-import AliveRouterView from '../aliveRouterView/index.vue';
+import AliveRouterView from '../AliveRouterView/index.vue';
 import { getEnv } from '/@/utils/env';
 import dayjs from 'dayjs';
 

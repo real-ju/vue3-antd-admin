@@ -104,14 +104,14 @@
 </template>
 
 <script setup lang="ts">
-import SiderMenu from './menu/SiderMenu/index.vue';
-import TopMenu from './menu/TopMenu/index.vue';
+import SiderMenu from './Menu/SiderMenu/index.vue';
+import TopMenu from './Menu/TopMenu/index.vue';
 import { useLayoutStore } from '/@/store/modules/layout';
 import { useUserStore } from '/@/store/modules/user';
 import { MenuModeEnum } from '/@/enums/layoutEnum';
 import { getEnv } from '/@/utils/env';
 import { goMenuFirstLeafNode } from '/@/logics/helper/layout';
-import AliveRouterView from '../aliveRouterView/index.vue';
+import AliveRouterView from '../AliveRouterView/index.vue';
 import { Modal } from 'ant-design-vue/es';
 import { BasicPageEnum } from '/@/enums/pageEnum';
 // import { useFullscreen } from '@vueuse/core';

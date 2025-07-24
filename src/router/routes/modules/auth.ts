@@ -1,7 +1,5 @@
 import type { RouteRecordRaw } from 'vue-router';
 
-import { asyncLayoutImport, asyncViewImport } from '/@/router/helper/asyncComponentImport';
-
 const auth: RouteRecordRaw = {
   path: '/auth',
   name: 'auth',
@@ -11,7 +9,7 @@ const auth: RouteRecordRaw = {
     public: true,
     allowTabControl: false
   },
-  component: asyncLayoutImport('auth/index.vue'),
+  component: () => import('../../../layouts/auth/index.vue'),
   children: [
     {
       path: 'login',
@@ -19,7 +17,7 @@ const auth: RouteRecordRaw = {
       meta: {
         title: '登陆'
       },
-      component: asyncViewImport('auth/login.vue')
+      component: () => import('../../../views/auth/login.vue')
     }
   ]
 };
