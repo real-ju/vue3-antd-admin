@@ -1,4 +1,3 @@
-<!-- 后续弃用，改用WrapTag -->
 <template>
   <a-tag
     :color="colorDataType === 'string' ? color : undefined"
@@ -23,7 +22,7 @@ import type { PropType } from 'vue';
 import { computed } from 'vue';
 
 defineOptions({
-  name: 'BasicTag'
+  name: 'WrapTag'
 });
 
 type ColorData =
@@ -35,6 +34,7 @@ type ColorData =
     };
 
 const props = defineProps({
+  // 【重写属性】
   color: {
     type: [String, Object] as PropType<ColorData>,
     default: undefined

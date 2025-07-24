@@ -9,7 +9,11 @@
   </div>
 </template>
 
-<script setup lang="ts"></script>
+<script setup lang="ts">
+defineOptions({
+  name: 'TBLayout'
+});
+</script>
 
 <style lang="less" scoped>
 .tb-layout {
@@ -29,6 +33,10 @@
   }
   :deep {
     .basic-page-card {
+      height: 100%;
+    }
+    // 后续删除
+    ._basic-page-card {
       height: 100%;
     }
   }

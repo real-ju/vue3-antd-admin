@@ -35,6 +35,10 @@ import type { PropType } from 'vue';
 
 import { default as Icon, Props as IconProps } from '../Icon';
 
+defineOptions({
+  name: 'InfoBoxRadio'
+});
+
 interface Option {
   title: string;
   value: string | number;
@@ -71,7 +75,7 @@ const onCheck = (item: Option) => {
 </script>
 
 <style lang="less" scoped>
-@import '../../design/theme/default/global.less';
+@import '../../theme.less';
 
 .info-box-radio {
   display: flex;

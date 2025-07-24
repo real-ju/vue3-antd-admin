@@ -9,6 +9,10 @@
 <script setup lang="ts">
 import { Row, Col } from 'ant-design-vue/es';
 
+defineOptions({
+  name: 'FormItemGroup'
+});
+
 const props = defineProps({
   offset: {
     type: Number,
@@ -18,7 +22,7 @@ const props = defineProps({
 </script>
 
 <style lang="less" scoped>
-@import '../../design/theme/default/global.less';
+@import '../../theme.less';
 
 .form-item-group {
   margin-top: -10px;

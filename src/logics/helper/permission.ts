@@ -14,14 +14,3 @@ export function checkPermission(per: string | string[]): boolean {
     return actionPermissions.includes(per);
   }
 }
-
-/**
- * 子系统访问权限鉴权
- * @param pkg 子系统标识
- */
-export function checkAppPermission(pkg: string): boolean {
-  const permissionStore = usePermissionStore();
-  const appPermissions = permissionStore.appPermissions;
-
-  return appPermissions.includes(pkg);
-}

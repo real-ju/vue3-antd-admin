@@ -1,14 +1,15 @@
 <template>
-  <div class="table-query-form">
+  <div class="table-query-form" :class="layout">
     <Form
       ref="formRef"
       :model="model"
+      :rules="rules"
       :label-col="formLabelCol"
-      :wrapper-col="formWrapperCol"
       labelWrap
       autocomplete="off"
+      :layout="layout"
     >
-      <Row :gutter="30">
+      <Row :gutter="30" v-if="layout === 'horizontal'">
         <FormItemCols
           :isCollapsed="isCollapsed"
           :maxColNum="maxColNum"
@@ -17,7 +18,12 @@
         >
           <slot v-if="hasDefaultSlots"></slot>
           <template v-else>
-            <FormItem v-for="item in visibleConfig" :key="item.name" :name="item.name">
+            <FormItem
+              v-for="item in visibleConfig"
+              :key="item.name"
+              :name="item.name"
+              :label="item.label"
+            >
               <!-- 显示placeholder提示 -->
               <Tooltip color="#ffffff" v-if="item.placeholderTip">
                 <template #title>
@@ -30,7 +36,7 @@
                   v-model:type="model[item.modelFields[0]]"
                   v-model:isPrecision="model[item.modelFields[2]]"
                   v-bind="item.props || {}"
-                  v-on="item.on || getFieldCompDefaultOn(item)"
+                  v-on="getFieldCompOn(item)"
                 >
                   <slot :name="`field-${item.name}-comp-slot`"></slot>
                 </PrecisionInput>
@@ -38,7 +44,7 @@
                   v-else-if="item.type === 'cascader'"
                   v-model:value="model[item.name]"
                   v-bind="item.props || {}"
-                  v-on="item.on || getFieldCompDefaultOn(item)"
+                  v-on="getFieldCompOn(item)"
                 >
                 </Cascader>
                 <component
@@ -46,7 +52,7 @@
                   :is="compMap[item.type]"
                   v-model:value="model[item.name]"
                   v-bind="item.props || {}"
-                  v-on="item.on || getFieldCompDefaultOn(item)"
+                  v-on="getFieldCompOn(item)"
                 >
                   <template #prefix v-if="item.type === 'input' && item.searchIcon">
                     <Icon form="regular" name="magnifying-glass" />
@@ -63,7 +69,7 @@
                   v-model:type="model[item.modelFields?.[0]]"
                   v-model:isPrecision="model[item.modelFields?.[2]]"
                   v-bind="item.props || {}"
-                  v-on="item.on || getFieldCompDefaultOn(item)"
+                  v-on="getFieldCompOn(item)"
                 >
                   <slot :name="`field-${item.name}-comp-slot`"></slot>
                 </PrecisionInput>
@@ -71,7 +77,7 @@
                   v-else-if="item.type === 'cascader'"
                   v-model:value="model[item.name]"
                   v-bind="item.props || {}"
-                  v-on="item.on || getFieldCompDefaultOn(item)"
+                  v-on="getFieldCompOn(item)"
                 >
                 </Cascader>
                 <component
@@ -79,7 +85,7 @@
                   :is="compMap[item.type]"
                   v-model:value="model[item.name]"
                   v-bind="item.props || {}"
-                  v-on="item.on || getFieldCompDefaultOn(item)"
+                  v-on="getFieldCompOn(item)"
                 >
                   <template #prefix v-if="item.type === 'input' && item.searchIcon">
                     <Icon form="regular" name="magnifying-glass" />
@@ -114,13 +120,106 @@
           </Button>
         </Col>
       </Row>
+      <template v-else-if="layout === 'inline'">
+        <!-- 同上 -->
+        <slot v-if="hasDefaultSlots"></slot>
+        <template v-else>
+          <FormItem
+            v-for="item in visibleConfig"
+            :key="item.name"
+            :name="item.name"
+            :label="item.label"
+            :style="{ width: item.width || inlineFormItemWidth }"
+          >
+            <!-- 显示placeholder提示 -->
+            <Tooltip color="#ffffff" v-if="item.placeholderTip">
+              <template #title>
+                <span class="primary-color">{{ item.props?.placeholder }}</span>
+              </template>
+              <slot v-if="item.type === 'custom'" :name="`field-${item.name}-slot`"></slot>
+              <PrecisionInput
+                v-else-if="item.type === 'precision-input'"
+                v-model:value="model[item.modelFields[1]]"
+                v-model:type="model[item.modelFields[0]]"
+                v-model:isPrecision="model[item.modelFields[2]]"
+                v-bind="item.props || {}"
+                v-on="getFieldCompOn(item)"
+              >
+                <slot :name="`field-${item.name}-comp-slot`"></slot>
+              </PrecisionInput>
+              <Cascader
+                v-else-if="item.type === 'cascader'"
+                v-model:value="model[item.name]"
+                v-bind="item.props || {}"
+                v-on="getFieldCompOn(item)"
+              >
+              </Cascader>
+              <component
+                v-else
+                :is="compMap[item.type]"
+                v-model:value="model[item.name]"
+                v-bind="item.props || {}"
+                v-on="getFieldCompOn(item)"
+              >
+                <template #prefix v-if="item.type === 'input' && item.searchIcon">
+                  <Icon form="regular" name="magnifying-glass" />
+                </template>
+                <slot :name="`field-${item.name}-comp-slot`"></slot>
+              </component>
+            </Tooltip>
+            <!-- 同上面 -->
+            <template v-else>
+              <slot v-if="item.type === 'custom'" :name="`field-${item.name}-slot`"></slot>
+              <PrecisionInput
+                v-else-if="item.type === 'precision-input'"
+                v-model:value="model[item.modelFields?.[1]]"
+                v-model:type="model[item.modelFields?.[0]]"
+                v-model:isPrecision="model[item.modelFields?.[2]]"
+                v-bind="item.props || {}"
+                v-on="getFieldCompOn(item)"
+              >
+                <slot :name="`field-${item.name}-comp-slot`"></slot>
+              </PrecisionInput>
+              <Cascader
+                v-else-if="item.type === 'cascader'"
+                v-model:value="model[item.name]"
+                v-bind="item.props || {}"
+                v-on="getFieldCompOn(item)"
+              >
+              </Cascader>
+              <component
+                v-else
+                :is="compMap[item.type]"
+                v-model:value="model[item.name]"
+                v-bind="item.props || {}"
+                v-on="getFieldCompOn(item)"
+              >
+                <template #prefix v-if="item.type === 'input' && item.searchIcon">
+                  <Icon form="regular" name="magnifying-glass" />
+                </template>
+                <slot :name="`field-${item.name}-comp-slot`"></slot>
+              </component>
+            </template>
+          </FormItem>
+        </template>
+        <FormItem>
+          <!-- 同上 -->
+          <Button class="query-form-action-btn" type="primary" @click="search">
+            <Icon name="magnifying-glass"></Icon>
+          </Button>
+          <Button class="query-form-action-btn" type="primary" ghost @click="reset">
+            <Icon name="rotate-right" form="solid"></Icon>
+          </Button>
+        </FormItem>
+      </template>
     </Form>
   </div>
 </template>
 
 <script setup lang="ts">
 import type { PropType } from 'vue';
-import type { FormInstance } from 'ant-design-vue';
+import type { FormInstance } from 'ant-design-vue/es';
+import { Recordable } from '@cqcdi/core-types';
 
 import { computed, ref, useSlots } from 'vue';
 import { useWindowSize } from '@vueuse/core';
@@ -143,11 +242,12 @@ import {
 import Icon from '../Icon';
 
 interface ConfigItem {
-  name: string;
+  name: string; // 表单域key
+  label: string; // 表单域label
   modelFields?: string[]; // 定义关联的model数据域（一般通过name进行匹配，如果有多个绑定的数据域则需要指定）
-  show?: boolean;
-  placeholderTip?: boolean;
-  searchIcon?: boolean;
+  show?: boolean; // 是否显示
+  placeholderTip?: boolean; // placeholder显示不全时，出现提示
+  searchIcon?: boolean; // 搜索图标，type=input时生效
   type:
     | 'input'
     | 'select'
@@ -156,8 +256,9 @@ interface ConfigItem {
     | 'range-picker'
     | 'cascader'
     | 'custom'; // custom表示自定义域组件，通过field-xxx-slot传入
-  props?: Recordable; // 传给v-bind
-  on?: Recordable; // 传给v-on
+  props?: Recordable; // 传给内部组件v-bind
+  on?: Recordable; // 传给内部组件v-on
+  width?: string; // layout=inline时生效
 }
 
 type Config = ConfigItem[];
@@ -170,17 +271,40 @@ const compMap: Record<string, any> = {
   cascader: Cascader
 };
 
+defineOptions({
+  name: 'TableQueryForm'
+});
+
 const props = defineProps({
+  // 表单布局模式：横向、内联
+  layout: {
+    type: String,
+    default: 'horizontal' // inline
+  },
+  // 内联模式表单域宽度
+  inlineFormItemWidth: {
+    type: String,
+    default: '250px'
+  },
+  // 配置
   config: {
     type: Array as PropType<Config>,
     default() {
       return [];
     }
   },
+  // model对象
   model: {
     type: Object as PropType<Recordable>,
     default() {
       return {};
+    }
+  },
+  // 表单规则，传给Antd Form rules
+  rules: {
+    type: Object as PropType<Recordable>,
+    default() {
+      return undefined;
     }
   },
   /**
@@ -200,29 +324,10 @@ const props = defineProps({
       return {};
     }
   },
+  // 固定label宽度，默认为{ span: 8 }，也可以传入对象自定义
   labelFixWidth: {
-    type: Boolean,
+    type: [Boolean, Object],
     default: true
-  },
-  selectionFlag: {
-    type: String,
-    default: 'general'
-  },
-  selectedRows: {
-    type: Array as PropType<Recordable[]>,
-    default() {
-      return [];
-    }
-  },
-  reverseSelectedRows: {
-    type: Array as PropType<Recordable[]>,
-    default() {
-      return [];
-    }
-  },
-  basicTableRef: {
-    type: Object,
-    default: undefined
   },
   // 是否在容器内使用，比如弹窗
   inContainer: {
@@ -233,6 +338,31 @@ const props = defineProps({
   containerWidth: {
     type: Number,
     default: 800
+  },
+  // 【以下属性为旧版本写法（后续弃用）】
+  // 配合useBasicTable使用选择功能时传入
+  selectionFlag: {
+    type: String,
+    default: 'general'
+  },
+  // 配合useBasicTable使用选择功能时传入
+  selectedRows: {
+    type: Array as PropType<Recordable[]>,
+    default() {
+      return [];
+    }
+  },
+  // 配合useBasicTable使用选择功能时传入
+  reverseSelectedRows: {
+    type: Array as PropType<Recordable[]>,
+    default() {
+      return [];
+    }
+  },
+  // 配合BasicTable使用时传入
+  basicTableRef: {
+    type: Object,
+    default: undefined
   }
 });
 
@@ -251,16 +381,23 @@ const visibleConfig = computed(() => {
   return props.config.filter((item) => item.show !== false);
 });
 
-const getFieldCompDefaultOn = (item: ConfigItem) => {
+const getFieldCompOn = (item: ConfigItem) => {
+  let on = {};
   if (item.type === 'input') {
-    return {
+    on = {
+      ...on,
       pressEnter: () => {
         search();
       }
     };
-  } else {
-    return {};
   }
+  if (item.on) {
+    on = {
+      ...on,
+      ...item.on
+    };
+  }
+  return on;
 };
 
 const slots = useSlots();
@@ -388,35 +525,57 @@ const switchCollapsed = () => {
   emit('collapse');
 };
 
-const search = () => {
-  emit('update:selectionFlag', 'general');
-  emit('update:selectedRows', []);
-  emit('update:reverseSelectedRows', []);
-  emit('resetTableData');
+const _search = () => {
+  if (props.basicTableRef) {
+    props.basicTableRef.reset();
+  } else {
+    emit('update:selectionFlag', 'general');
+    emit('update:selectedRows', []);
+    emit('update:reverseSelectedRows', []);
+    emit('resetTableData');
+  }
   emit('search');
+};
+
+const search = () => {
+  if (props.rules) {
+    formRef.value!.validate().then(() => {
+      _search();
+    });
+  } else {
+    _search();
+  }
 };
 
 const reset = () => {
   formRef.value!.resetFields();
   emit('update:model', cloneDeep(defaultModel));
-  emit('update:selectionFlag', 'general');
-  emit('update:selectedRows', []);
-  emit('update:reverseSelectedRows', []);
-  emit('resetTableData');
+  if (props.basicTableRef) {
+    props.basicTableRef.reset();
+  } else {
+    emit('update:selectionFlag', 'general');
+    emit('update:selectedRows', []);
+    emit('update:reverseSelectedRows', []);
+    emit('resetTableData');
+  }
   emit('reset');
 };
 
 const formLabelCol = computed(() => {
-  return props.labelFixWidth ? { span: 8 } : undefined;
+  return props.labelFixWidth
+    ? typeof props.labelFixWidth === 'boolean'
+      ? { span: 8 }
+      : props.labelFixWidth
+    : undefined;
 });
 
-const formWrapperCol = computed(() => {
-  return props.labelFixWidth ? { span: 16 } : undefined;
-});
+// const formWrapperCol = computed(() => {
+//   return props.labelFixWidth ? { span: 16 } : undefined;
+// });
 
 defineExpose({
-  search,
-  reset
+  search, // 搜索
+  reset // 重置
 });
 </script>
 
@@ -426,14 +585,15 @@ defineExpose({
 
   .query-form-action-col {
     height: 44px;
-    .query-form-action-btn {
-      padding: 4px 10px;
-      & + .query-form-action-btn {
-        margin-left: 20px;
-      }
-      i {
-        font-size: 13px;
-      }
+  }
+
+  .query-form-action-btn {
+    padding: 4px 10px;
+    & + .query-form-action-btn {
+      margin-left: 20px;
+    }
+    i {
+      font-size: 13px;
     }
   }
 
@@ -448,6 +608,22 @@ defineExpose({
     }
     .ant-picker {
       width: 100%;
+    }
+  }
+
+  &.inline {
+    .query-form-action-btn {
+      & + .query-form-action-btn {
+        margin-left: 16px;
+      }
+    }
+    :deep {
+      // .ant-form-item {
+      //   margin-bottom: 0px;
+      // }
+      .ant-form-item:last-child {
+        margin-inline-end: 0px;
+      }
     }
   }
 }

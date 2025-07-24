@@ -3,6 +3,7 @@ import type { PropType, VNode } from 'vue';
 
 import { defineComponent, h } from 'vue';
 import { Col } from 'ant-design-vue/es';
+import { Recordable, Nullable } from '@cqcdi/core-types';
 
 export default defineComponent({
   name: 'FormItemCols',

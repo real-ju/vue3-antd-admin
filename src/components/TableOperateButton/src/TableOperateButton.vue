@@ -9,6 +9,10 @@
 </template>
 
 <script setup lang="ts">
+defineOptions({
+  name: 'TableOperateButton'
+});
+
 const props = defineProps({
   type: {
     type: String,
@@ -22,7 +26,7 @@ const props = defineProps({
 </script>
 
 <style lang="less" scoped>
-@import '../../../design/theme/default/global.less';
+@import '../../../theme.less';
 
 .table-operate-button {
   color: @primary-color;

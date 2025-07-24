@@ -24,6 +24,10 @@
 <script setup lang="ts">
 import { Row, Col } from 'ant-design-vue/es';
 
+defineOptions({
+  name: 'LRLayout'
+});
+
 const props = defineProps({
   leftSpan: {
     type: Number,
@@ -66,6 +70,10 @@ const props = defineProps({
   }
   :deep {
     .basic-page-card {
+      height: 100%;
+    }
+    // 后续删除
+    ._basic-page-card {
       height: 100%;
     }
   }

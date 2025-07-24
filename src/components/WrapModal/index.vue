@@ -1,8 +1,7 @@
 <template>
   <Modal
-    class="basic-modal"
-    v-bind="props.modalProps"
-    :title="status ? undefined : props.modalProps.title"
+    class="wrap-modal"
+    :title="status ? undefined : title"
     :visible="visible"
     @update:visible="onUpdateVisible"
   >
@@ -42,13 +41,14 @@
           name="CloseCircleOutlined"
         >
         </Icon>
-        <span>{{ modalProps.title || '' }}</span>
+        <span>{{ title || '' }}</span>
       </div>
     </template>
     <template #footer>
       <slot name="footer">
         <Button @click="onModalCancel">取消</Button>
         <Button
+          v-if="!hiddenConfirmBtn"
           type="primary"
           :disabled="modalLoading"
           :loading="confirmBtnLoading"
@@ -67,17 +67,24 @@ import { Modal, Button } from 'ant-design-vue/es';
 import LoadingTipBox from '../LoadingTipBox/index.vue';
 import Icon from '../Icon';
 
+defineOptions({
+  name: 'WrapModal'
+});
+
 const props = defineProps({
+  // 【重写属性】
+  // 显示
   visible: {
     type: Boolean,
     default: false
   },
-  modalProps: {
-    type: Object,
-    default() {
-      return {};
-    }
+  // 标题
+  title: {
+    type: String,
+    default: ''
   },
+  // 【扩展属性】
+  // 加载
   modalLoading: {
     type: Boolean,
     default: false
@@ -87,24 +94,34 @@ const props = defineProps({
     type: String,
     default: ''
   },
+  // 确定按钮加载
   confirmBtnLoading: {
     type: Boolean,
     default: false
   },
+  // 确定按钮props
   confirmBtnProps: {
     type: Object,
     default() {
       return {};
     }
   },
+  // 隐藏确定按钮
+  hiddenConfirmBtn: {
+    type: Boolean,
+    default: false
+  },
+  // 滚动条
   scrollY: {
     type: Number,
     default: null
   },
+  // 状态模式：success|error
   status: {
     type: String,
     default: ''
   },
+  // 内容区域去掉padding
   contentNoPadding: {
     type: Boolean,
     default: false
@@ -131,7 +148,7 @@ const onModalConfirm = () => {
 </script>
 
 <style lang="less" scoped>
-@import '../../design/theme/default/global.less';
+@import '../../theme.less';
 
 .modal-content {
   width: 100%;
@@ -142,7 +159,7 @@ const onModalConfirm = () => {
     overflow-y: auto;
   }
   &.no-padding {
-    padding: 0px;
+    padding: 0px !important;
   }
 }
 .custom-title {

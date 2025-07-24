@@ -8,7 +8,7 @@
         @update:value="onSelectValueUpdate"
         :options="list"
         :fieldNames="{ label: 'name' }"
-        :style="{ width: '150px' }"
+        :style="{ width: listWidth || '100px', flex: 'none' }"
       >
       </Select>
       <Input
@@ -36,6 +36,10 @@
 <script setup lang="ts">
 import { InputGroup, Select, Input, FormItemRest, Checkbox } from 'ant-design-vue/es';
 
+defineOptions({
+  name: 'PrecisionInput'
+});
+
 const props = defineProps({
   value: {
     type: String,
@@ -59,6 +63,10 @@ const props = defineProps({
       return [];
     }
   },
+  listWidth: {
+    type: String,
+    default: ''
+  },
   isPrecision: {
     type: Boolean,
     default: false
@@ -76,16 +84,13 @@ const props = defineProps({
 const emit = defineEmits(['update:value', 'update:type', 'update:isPrecision']);
 
 const onSelectValueUpdate = (value: String) => {
-  console.log(value, '========================>onSelectValueUpdate');
   emit('update:type', value);
 };
 const onValueUpdate = (value: String) => {
-  console.log(value, '========================>onValueUpdate');
   emit('update:value', value);
 };
 
 const onPrecisionValueUpdate = (value: String) => {
-  console.log(value, '========================>onPrecisionValueUpdate');
   emit('update:isPrecision', value);
 };
 </script>

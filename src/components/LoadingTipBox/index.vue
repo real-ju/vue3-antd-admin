@@ -13,18 +13,33 @@ import { Spin } from 'ant-design-vue/es';
 import { LoadingOutlined } from '@ant-design/icons-vue';
 import { computed, h } from 'vue';
 
+defineOptions({
+  name: 'LoadingTipBox'
+});
+
 const props = defineProps({
+  // 块高度
   height: {
     type: String,
     default: null
   },
+  // 块背景色
   bgColor: {
     type: String,
     default: 'rgba(255, 255, 255, 0.5)'
   },
+  // 开启position: absolute（父节点设置position: relative）
   float: {
     type: Boolean,
     default: false
+  },
+  color: {
+    type: String,
+    default: undefined
+  },
+  size: {
+    type: Number,
+    default: 24
   }
 });
 
@@ -34,7 +49,8 @@ const boxHeight = computed(() => {
 
 const indicator = h(LoadingOutlined, {
   style: {
-    fontSize: '24px'
+    fontSize: `${props.size}px`,
+    color: props.color
   },
   spin: true
 });

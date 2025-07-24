@@ -22,7 +22,9 @@
             :name="[index, column.key]"
             :rules="getFormItemRules(index, column.key)"
           >
+            <!-- 同下 -->
             <component
+              v-if="!getEditComp(column, { column, record, index }).tip"
               :is="compMap[getEditComp(column, { column, record, index }).type]"
               v-model:value="record[column.key]"
               v-bind="getEditComp(column, { column, record, index }).props || {}"
@@ -30,9 +32,30 @@
             >
               <slot :name="`col-${column.key}-comp-slot`"></slot>
             </component>
+            <WrapPopover
+              v-else
+              :data="getEditComp(column, { column, record, index }).tip"
+              placement="top"
+            >
+              <template #content>
+                <!-- 同上 -->
+                <component
+                  :is="compMap[getEditComp(column, { column, record, index }).type]"
+                  v-model:value="record[column.key]"
+                  v-bind="getEditComp(column, { column, record, index }).props || {}"
+                  v-on="getEditComp(column, { column, record, index }).on || {}"
+                >
+                  <slot :name="`col-${column.key}-comp-slot`"></slot>
+                </component>
+              </template>
+            </WrapPopover>
           </FormItem>
           <template v-else-if="$slots[`col-${column.key}-cell`]">
-            <FormItem class="slot-column-form-item" :name="[index, column.key]">
+            <FormItem
+              class="slot-column-form-item"
+              :name="[index, column.key]"
+              :rules="getFormItemRules(index, column.key)"
+            >
               <slot
                 :name="`col-${column.key}-cell`"
                 :column="column"
@@ -59,6 +82,8 @@ import type { ColumnsType } from 'ant-design-vue/es/table';
 
 import { ref, computed, nextTick } from 'vue';
 import { Table, Input, InputNumber, Select, AutoComplete, Form, FormItem } from 'ant-design-vue/es';
+import { Recordable } from '@cqcdi/core-types';
+import WrapPopover from '../WrapPopover/index.vue';
 
 const compMap: Record<string, any> = {
   input: Input,
@@ -71,34 +96,42 @@ interface EditCompConfig {
   type: 'input' | 'input-number' | 'select' | 'auto-complete';
   props?: Object; // 传给v-bind
   on?: Object; // 传给v-on
+  tip?: string; // 文本提示
 }
 
+defineOptions({
+  name: 'EditableTable'
+});
+
 const props = defineProps({
+  // 传给Antd Table的props，不过column配置中扩展了几个字段（如下）
   tableProps: {
     type: Object as PropType<
       TableProps & {
         columns: ColumnsType &
           Array<{
             key: string;
-            required?: boolean;
+            required?: boolean; // 必填列
             editComp?:
               | EditCompConfig
               | ((cellData: {
                   column: Recordable;
                   record: Recordable;
                   index: number;
-                }) => EditCompConfig);
+                }) => EditCompConfig); // 配置编辑组件，支持工厂函数
           }>;
       }
     >,
     default: null
   },
+  // 每条数据的验证规则，支持工厂函数
   rules: {
     type: Object as PropType<
       Recordable | ((data: { record: Recordable; index: number }) => Recordable)
     >,
     default: null
   },
+  // 隐藏新增数据按钮
   hideAddAction: {
     type: Boolean,
     default: false
@@ -162,9 +195,9 @@ const rowReValidate = (rowIndex: number) => {
 };
 
 defineExpose({
-  formRef,
-  addRecord,
-  rowReValidate
+  formRef, // 内部Form组件ref
+  addRecord, // 添加数据
+  rowReValidate // 单行数据验证
 });
 </script>
 
@@ -210,7 +243,7 @@ defineExpose({
               .ant-table-header {
                 flex: none;
                 .ant-table-cell {
-                  padding: 13px;
+                  padding: 13px !important;
                 }
               }
               .ant-table-body {
@@ -219,8 +252,8 @@ defineExpose({
                 max-height: unset !important;
                 overflow-y: auto !important;
                 .ant-table-cell {
-                  padding-top: 12px;
-                  padding-bottom: 12px;
+                  padding-top: 12px !important;
+                  padding-bottom: 12px !important;
                 }
                 .ant-table-placeholder {
                   display: none;

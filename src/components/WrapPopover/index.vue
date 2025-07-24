@@ -1,8 +1,8 @@
 <template>
-  <Popover :title="title" :placement="placement">
+  <Popover>
     <template #content>
       <div class="popover-content">
-        <slot name="popoverContent">
+        <slot name="content">
           <template v-if="fullContentType === 'array'">
             <div v-for="(item, index) in fullContent" :key="index">
               {{ item }}
@@ -16,7 +16,7 @@
       </div>
     </template>
     <span class="content">
-      <slot name="content">
+      <slot>
         <span v-if="shortContentType === 'ellipsisTag'">
           <span>{{ shortContent[0] || '-' }}</span>
           <Tag v-if="shortContent.length > 1" style="margin-left: 5px">
@@ -33,24 +33,18 @@
 import { computed } from 'vue';
 import { Popover, Tag } from 'ant-design-vue/es';
 
+defineOptions({
+  name: 'WrapPopover'
+});
+
 const props = defineProps({
-  title: {
-    type: String,
-    default: ''
-  },
-  placement: {
-    type: String,
-    default: 'topLeft'
-  },
+  // 【扩展属性】
+  // 内容
   data: {
     type: [String, Array],
     default: ''
   },
-  dataType: {
-    type: String,
-    default: 'normal'
-  },
-  // 类数组字符串
+  // 内容为类数组字符串
   arrayLike: {
     type: Boolean,
     default: false
@@ -82,15 +76,13 @@ const shortContent = computed(() => {
 <style lang="less" scoped>
 .popover-content {
   max-width: 600px;
+  max-height: 70vh;
+  overflow-y: auto;
   word-wrap: break-word;
   word-break: keep-all;
 }
 
 .content {
   cursor: default;
-}
-
-:global(.table-popover-org-tree .ant-tree-node-content-wrapper) {
-  user-select: unset;
 }
 </style>

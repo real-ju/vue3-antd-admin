@@ -9,6 +9,10 @@
 <script setup lang="ts">
 import type { PropType } from 'vue';
 
+defineOptions({
+  name: 'HeadTabs'
+});
+
 interface TabInfo {
   title: string;
   key: string;
