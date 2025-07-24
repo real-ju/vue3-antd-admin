@@ -1,13 +1,6 @@
 <template>
   <div class="login-view">
-    <a-form
-      ref="formRef"
-      :model="formModel"
-      name="form"
-      :label-col="{ span: 8 }"
-      :wrapper-col="{ span: 8 }"
-      :rules="formRules"
-    >
+    <a-form ref="formRef" :model="formModel" name="form" :rules="formRules">
       <a-form-item name="username">
         <a-input v-model:value="formModel.username" size="large" placeholder="账号">
           <template #prefix>
